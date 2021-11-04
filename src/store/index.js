@@ -20,6 +20,8 @@ export const store = new Vuex.Store({
     setAllData(state, payload) {
       console.log(payload);
       state.categories = payload.categories;
+      state.brands = payload.brands;
+      state.products = payload.goods;
     },
     setUser(state, userId) {
       state.user.isAuthentificated = true;
@@ -79,7 +81,7 @@ export const store = new Vuex.Store({
   },
   getters: {
     getProducts: (state) => state.products,
-    getbrands: (state) => state.brands,
+    getBrands: (state) => state.brands,
     getCategories: (state) => state.categories,
     isAuth: (state) => state.user.isAuthentificated
   }

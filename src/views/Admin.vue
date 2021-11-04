@@ -5,8 +5,7 @@
    <v-main>
     <v-container>
     <v-row>
-      <v-col
-        col="12">
+      <v-col col="12">
           <!-- <h2>Панель администратора</h2> -->
           </v-btn>
           <v-tabs :v-model="tabs[comp]">
@@ -18,30 +17,12 @@
               >{{ item.title }}</v-tab
             >
           </v-tabs>
-          <keep-alive>
-            <component :is="tabs[comp].component"></component>
-          </keep-alive>
-
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">id</th>
-                  <th class="text-left">Категория</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in categories">
-                  <td>{{ item.id }}</td>
-                  <td>{{ item.category }}</td>
-                </tr>
-                <tr>
-                  <td colspan="2">{{ categories.lenght }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-col>
+      </v-col>
+    </v-row>
+    <v-row>
+      <keep-alive>
+        <component :is="tabs[comp].component"></component>
+      </keep-alive>
     </v-row>
     
   </v-container>
@@ -61,7 +42,7 @@ export default {
 
   data() {
     return {
-      comp: 2,
+      comp: 0,
       tabs: [
         {
           title: "Категории",
@@ -85,9 +66,6 @@ export default {
     AdminHeader
   },
   computed: {
-    auth(){
-      return this.$store.getters.isAuth;
-    },
     selectedTab() {
       return this.tabs[this.comp];
     },

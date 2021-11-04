@@ -1,5 +1,8 @@
 <template>
-  <h2>Products</h2>
+	<v-col col="12">
+  	<h2 class="text-center">Товары</h2>
+		{{products}}
+	</v-col>
 </template>
 
 <script>
@@ -9,6 +12,12 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    products() {
+      // console.log(this.$store.getters.getCategories);
+      return this.$store.getters.getProducts;
+    }
+  }
 };
 </script>
 

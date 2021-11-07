@@ -40,6 +40,22 @@
           class="mx-4"
           ></v-text-field>
     </v-col>
+    <v-col class="col-md-6 col-12">
+      <h3>Бренды</h3>
+      <v-container fluid>
+        <v-row class="light--text">
+          <v-col class="d-flex">
+           <v-checkbox v-for="(box, i) in bransCheckboxes" :key="i"
+              v-model="bransCheckboxes[i].state"
+              :label="bransCheckboxes[i].title"
+              :value="bransCheckboxes[i].title"
+            ></v-checkbox>
+
+          </v-col>
+            {{bransCheckboxes}}
+        </v-row>
+      </v-container>
+    </v-col>
   	<v-col class="col-12">
     	<h2 class="text-center">Товары</h2>
       
@@ -63,6 +79,7 @@ export default {
 
   data() {
     return {
+      bransCheckboxes: [],
       header: [
         {
 
@@ -104,17 +121,27 @@ export default {
   },
   computed: {
     categories() {
-      // console.log(this.$store.getters.getCategories);
       return this.$store.getters.getCategories;
     },
+    brands() {
+      return this.$store.getters.getBrands;
+    },
     products() {
-      // console.log(this.$store.getters.getCategories);
       return this.$store.getters.getProducts;
     },
     productsFilterByPrice() {
       // console.log(this.$store.getters.getCategories);
       return this.products.filter(prod => parseInt(prod.price) >= this.min && parseInt(prod.price) <= this.range[1]);
     },
+    // checkedByBrands(){
+    //   if(this.bransCheckboxes.some(brand => brand.state)){
+    //     return this.products.filter(prod => {
+    //       if(bransCheckboxes[prod.brand])
+    //       bransCheckboxes.title === prod.brand
+    //     });
+    //   }
+    //   return this.products;
+    // },
     productsToRenderInTable(){
       return this.productsFilterByPrice.map(prod => ({
         id: prod.good_id,
@@ -125,12 +152,21 @@ export default {
         rating: prod.rating
       }));
     },
-    miny(){
-      return this.products.map(prod => parseInt(prod.price));
-    },
     max(){
       return Math.max(...this.products.map(prod => parseInt(prod.price)));
-    }
+    },
+    // bransCheckboxes(){
+    //   return this.brands.map(brand => ({
+    //     title: brand.brand,
+    //     state: false
+    //   }))
+    // }
+  },
+  async created(){
+    this.bransCheckboxes = await this.$store.getters.getBrands.map(brand => ({
+        title: brand.brand,
+        state: false
+      })); 
   }
 };
 </script>

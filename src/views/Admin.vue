@@ -19,11 +19,9 @@
           </v-tabs>
       </v-col>
     </v-row>
-    <v-row>
-      <keep-alive>
-        <component :is="tabs[comp].component"></component>
-      </keep-alive>
-    </v-row>
+    <keep-alive>
+      <component :is="tabs[comp].component"></component>
+    </keep-alive>
     
   </v-container>
   </v-main>

@@ -45,14 +45,16 @@
       <v-container fluid>
         <v-row class="light--text">
           <v-col class="d-flex">
-           <v-checkbox v-for="(box, i) in bransCheckboxes" :key="i"
+           <v-checkbox class="ml-2 mr-2" v-for="(box, i) in bransCheckboxes" :key="i"
               v-model="bransCheckboxes[i].state"
               :label="bransCheckboxes[i].title"
               :value="bransCheckboxes[i].title"
             ></v-checkbox>
 
           </v-col>
-            {{bransCheckboxes}}
+            <!-- {{bransCheckboxes}}
+            <p></p>
+            {{checkedByBrands}} -->
         </v-row>
       </v-container>
     </v-col>
@@ -130,20 +132,20 @@ export default {
       return this.$store.getters.getProducts;
     },
     productsFilterByPrice() {
-      // console.log(this.$store.getters.getCategories);
-      return this.products.filter(prod => parseInt(prod.price) >= this.min && parseInt(prod.price) <= this.range[1]);
+      return this.products.filter(prod => parseInt(prod.price) >= this.range[0] && parseInt(prod.price) <= this.range[1]);
     },
-    // checkedByBrands(){
-    //   if(this.bransCheckboxes.some(brand => brand.state)){
-    //     return this.products.filter(prod => {
-    //       if(bransCheckboxes[prod.brand])
-    //       bransCheckboxes.title === prod.brand
-    //     });
-    //   }
-    //   return this.products;
-    // },
+    checkedByBrands(){
+      if(this.bransCheckboxes.some(brand => brand.state)){
+        return this.products.filter(prod => {
+          const checkTrue = this.bransCheckboxes.filter(brand => brand.state)
+            .map(brand => brand.title);
+          return checkTrue.find(name => name === prod.brand)
+        });
+      }
+      return this.products;
+    },
     productsToRenderInTable(){
-      return this.productsFilterByPrice.map(prod => ({
+      return this.checkedByBrands.map(prod => ({
         id: prod.good_id,
         good: prod.good,
         category: this.categories.find(cat => prod.category_id === cat.id.toString()).category,
@@ -154,13 +156,7 @@ export default {
     },
     max(){
       return Math.max(...this.products.map(prod => parseInt(prod.price)));
-    },
-    // bransCheckboxes(){
-    //   return this.brands.map(brand => ({
-    //     title: brand.brand,
-    //     state: false
-    //   }))
-    // }
+    }
   },
   async created(){
     this.bransCheckboxes = await this.$store.getters.getBrands.map(brand => ({

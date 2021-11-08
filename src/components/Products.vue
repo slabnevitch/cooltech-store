@@ -67,7 +67,49 @@
         :items-per-page="5"
         :search="search"
         class="elevation-1"
-        >       
+        >
+        <template v-slot:item.controls="props">
+          <v-tooltip left>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class="mx-2"
+                small
+                fab
+                dark
+                color="cyan"
+                @click="onButtonClick(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                >
+                <v-icon dark>
+                  mdi-pencil
+                </v-icon>
+            </v-btn>
+
+          </template>
+          <span>Редактировать</span>
+        </v-tooltip>
+        <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class="mx-2"
+                small
+                fab
+                dark
+                color="red"
+                @click="onButtonClick(props.item)"
+                v-bind="attrs"
+                v-on="on"
+                >
+                <v-icon dark>
+                  mdi-delete
+                </v-icon>
+            </v-btn>
+
+          </template>
+          <span>Удалить</span>
+        </v-tooltip>
+      </template>       
       </v-data-table>
   	</v-col>
     
@@ -112,7 +154,8 @@ export default {
 
            value: 'rating',
           text: "Рейтинг",
-        }
+        },
+        { text: "Действия", value: "controls", sortable: false }
       ],
 
       search: '',
@@ -156,6 +199,12 @@ export default {
     },
     max(){
       return Math.max(...this.products.map(prod => parseInt(prod.price)));
+    }
+  },
+  methods: {
+    onButtonClick(item){
+      console.log(item)
+      this.$router.push('product/' + item.id)
     }
   },
   async created(){

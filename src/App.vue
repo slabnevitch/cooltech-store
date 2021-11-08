@@ -11,6 +11,9 @@ export default {
   name: "App",
   components: {
     Catalog
+  },
+  async created() {
+    await this.$store.dispatch("fetchAllData");
   }
 };
 </script>

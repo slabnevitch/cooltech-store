@@ -2,14 +2,25 @@
   <v-row>
     <v-col class="col-md-6 col-12">
       <h3>Фильтр по цене</h3>
-      <v-text-field
-            :value="range[0]"
-            class="mt-0 pt-0"
-                        single-line
-            type="number"
-            style="width: 60px"
-            @change="$set(range, 0, $event)"
-            ></v-text-field>
+      <div class="d-flex justify-space-between">
+        <v-text-field
+              :value="range[0]"
+              class="mt-0 pt-0 flex-grow-0"
+                          single-line
+              type="number"
+              style="width: 60px"
+              @change="$set(range, 0, $event)"
+              ></v-text-field>
+        <v-text-field
+          :value="range[1]"
+          class="mt-0 pt-0 flex-grow-0"
+                      single-line
+          type="number"
+          style="width: 60px"
+          @change="$set(range, 1, $event)"
+          ></v-text-field>
+        
+      </div>
       <v-range-slider
           v-model="range"
           :max="max"
@@ -21,14 +32,6 @@
             
           </template>
           <template v-slot:append>
-            <v-text-field
-            :value="range[1]"
-            class="mt-0 pt-0"
-                        single-line
-            type="number"
-            style="width: 60px"
-            @change="$set(range, 1, $event)"
-            ></v-text-field>
           </template>
       </v-range-slider>
     </v-col>

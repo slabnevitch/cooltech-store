@@ -2,6 +2,14 @@
   <v-row>
     <v-col class="col-md-6 col-12">
       <h3>Фильтр по цене</h3>
+      <v-text-field
+            :value="range[0]"
+            class="mt-0 pt-0"
+                        single-line
+            type="number"
+            style="width: 60px"
+            @change="$set(range, 0, $event)"
+            ></v-text-field>
       <v-range-slider
           v-model="range"
           :max="max"
@@ -10,22 +18,13 @@
           class="align-center"
           >
           <template v-slot:prepend>
-            <v-text-field
-            :value="range[0]"
-            class="mt-0 pt-0"
-            hide-details
-            single-line
-            type="number"
-            style="width: 60px"
-            @change="$set(range, 0, $event)"
-            ></v-text-field>
+            
           </template>
           <template v-slot:append>
             <v-text-field
             :value="range[1]"
             class="mt-0 pt-0"
-            hide-details
-            single-line
+                        single-line
             type="number"
             style="width: 60px"
             @change="$set(range, 1, $event)"
@@ -58,6 +57,9 @@
         </v-row>
       </v-container>
     </v-col>
+    <v-col class="col-md-6 col-12 text-right">
+      <v-btn class="success">Добавить товар</v-btn>
+    </v-col>
   	<v-col class="col-12">
     	<h2 class="text-center">Товары</h2>
       
@@ -68,7 +70,70 @@
         :search="search"
         class="elevation-1"
         >
-        <template v-slot:item.controls="props">
+        <template v-slot:body="{items}">
+          <tbody>
+            <tr v-for="(item,index) in items" :key="index">
+              <td>{{item.id}}</td>
+              <td>
+                <v-img
+                  class="mt-2 mb-2"
+                  max-height="100"
+                  max-width="100"
+                  :src="item.photo"
+                ></v-img>
+              </td>
+              <td>{{item.good}}</td>
+              <td>{{item.category}}</td>
+              <td>{{item.brand}}</td>
+              <td>{{item.price}}</td>
+              <td>{{item.rating}}</td>
+              <td>
+                <v-tooltip left>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      class="mx-2"
+                      small
+                      fab
+                      dark
+                      color="cyan"
+                      @click="onButtonClick(item)"
+                      v-bind="attrs"
+                      v-on="on"
+                       >
+                      <v-icon dark>
+                        mdi-pencil
+                      </v-icon>
+                    </v-btn>
+
+                  </template>
+                  <span>Редактировать</span>
+                </v-tooltip>
+
+                <v-tooltip right>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      class="mx-2"
+                      small
+                      fab
+                      dark
+                      color="red"
+                      @click="onButtonClick(item)"
+                      v-bind="attrs"
+                      v-on="on"
+                      >
+                      <v-icon dark>
+                        mdi-delete
+                      </v-icon>
+                    </v-btn>
+
+                  </template>
+                  <span>Удалить</span>
+                </v-tooltip>
+              </td>
+            </tr>
+           </tbody>
+        </template>
+        <!-- <template v-slot:item.controls="props">
           <v-tooltip left>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -109,7 +174,7 @@
           </template>
           <span>Удалить</span>
         </v-tooltip>
-      </template>       
+      </template>    -->    
       </v-data-table>
   	</v-col>
     
@@ -129,6 +194,12 @@ export default {
 
            value: 'id',
           text: "id",
+        },
+        {
+
+           value: 'photo',
+          text: "Изображение",
+          sortable: false
         },
         {
 
@@ -179,17 +250,18 @@ export default {
     },
     checkedByBrands(){
       if(this.bransCheckboxes.some(brand => brand.state)){
-        return this.products.filter(prod => {
+        return this.productsFilterByPrice.filter(prod => {
           const checkTrue = this.bransCheckboxes.filter(brand => brand.state)
             .map(brand => brand.title);
           return checkTrue.find(name => name === prod.brand)
         });
       }
-      return this.products;
+      return this.productsFilterByPrice;
     },
     productsToRenderInTable(){
       return this.checkedByBrands.map(prod => ({
         id: prod.good_id,
+        photo: prod.photo,
         good: prod.good,
         category: this.categories.find(cat => prod.category_id === cat.id.toString()).category,
         brand: prod.brand,

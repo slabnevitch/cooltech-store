@@ -8,7 +8,7 @@
               class="mt-0 pt-0 flex-grow-0"
                           single-line
               type="number"
-              style="width: 60px"
+              
               @change="$set(range, 0, $event)"
               ></v-text-field>
         <v-text-field
@@ -16,23 +16,22 @@
           class="mt-0 pt-0 flex-grow-0"
                       single-line
           type="number"
-          style="width: 60px"
+          
           @change="$set(range, 1, $event)"
           ></v-text-field>
-        
+        <div>{{range}}</div>
+        /
+        <div>{{max}}</div>
+        /
+        <div>{{search}}</div>
       </div>
       <v-range-slider
           v-model="range"
           :max="max"
           :min="min"
-          hide-details
+          
           class="align-center"
           >
-          <template v-slot:prepend>
-            
-          </template>
-          <template v-slot:append>
-          </template>
       </v-range-slider>
     </v-col>
     <v-col class="col-md-6 col-12">
@@ -79,11 +78,19 @@
               <td>{{item.id}}</td>
               <td>
                 <v-img
-                  class="mt-2 mb-2"
-                  max-height="100"
-                  max-width="100"
-                  :src="item.photo"
-                ></v-img>
+                    class="mt-2 mb-2"
+                    max-height="100"
+                    max-width="100"
+                    :src="item.photo"
+                  ></v-img>
+                  <v-btn
+                  color="primary"
+                  text
+                    @click.stop="openImgDialog(item)" 
+ 
+                  >
+                  I accept
+              </v-btn>
               </td>
               <td>{{item.good}}</td>
               <td>{{item.category}}</td>
@@ -179,6 +186,38 @@
         </v-tooltip>
       </template>    -->    
       </v-data-table>
+              <v-dialog
+              v-model="dialog"
+              width="500"
+              >
+            <v-card>
+              <v-card-title class="text-h5 grey lighten-2">
+                Privacy Policy
+              </v-card-title>
+
+              <v-card-text>
+                <v-img
+                class="mt-2 mb-2"
+
+                :src="dialogContent.photo"
+                ></v-img>
+                {{dialogContent.good}}
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                color="primary"
+                text
+                @click="dialog = false"
+                >
+                Закрыть
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
   	</v-col>
     
   </v-row>
@@ -229,14 +268,21 @@ export default {
            value: 'rating',
           text: "Рейтинг",
         },
-        { text: "Действия", value: "controls", sortable: false }
+        { text: "Действия", 
+          value: "controls", 
+          sortable: false 
+        }
       ],
 
       search: '',
        min: 0,
       // max: 90,
-      range: [0, 10000],
-    };
+      range: [0, 50000],
+      dialog: false,
+      dialogContent: {
+        photo: 'null'
+      }
+    }
   },
   computed: {
     categories() {
@@ -280,13 +326,27 @@ export default {
     onButtonClick(item){
       console.log(item)
       this.$router.push('product/' + item.id)
+    },
+    openImgDialog(item){
+      this.dialogContent = item;
+      this.dialog = true;
     }
   },
   async created(){
-    this.bransCheckboxes = await this.$store.getters.getBrands.map(brand => ({
-        title: brand.brand,
-        state: false
-      })); 
+    // console.log(this.range[0])
+    // this.bransCheckboxes = await this.$store.getters.getBrands.map(brand => ({
+    //     title: brand.brand,
+    //     state: false
+    //   })); 
+    console.log(this.range[0])
+    console.log(this.range[1])
+  },
+  mounted(){
+    setTimeout(() => {
+      this.range[0] = 0;
+      this.range[1] = 50000;
+      
+    })
   }
 };
 </script>

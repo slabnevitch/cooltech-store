@@ -8,7 +8,7 @@
       <v-col col="12">
           <!-- <h2>Панель администратора</h2> -->
           </v-btn>
-          <v-tabs :v-model="tabs[comp]">
+          <v-tabs>
             <v-tab
               v-for="(item, i) in tabs"
               :key="i"
@@ -43,16 +43,16 @@ export default {
       comp: 0,
       tabs: [
         {
+          title: "Товары",
+          component: "products",
+        },
+        {
           title: "Категории",
           component: "categories",
         },
         {
           title: "Бренды",
           component: "brands",
-        },
-        {
-          title: "Товары",
-          component: "products",
         },
       ],
     };

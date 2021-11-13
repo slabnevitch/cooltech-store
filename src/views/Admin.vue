@@ -50,10 +50,10 @@ export default {
           title: "Категории",
           component: "categories",
         },
-        {
-          title: "Бренды",
-          component: "brands",
-        },
+        // {
+        //   title: "Бренды",
+        //   component: "brands",
+        // },
       ],
     };
   },
@@ -73,7 +73,7 @@ export default {
     },
   },
   async created() {
-    await this.$store.dispatch("fetchAllData");
+    // await this.$store.dispatch("fetchAllData");
   }
 };
 </script>

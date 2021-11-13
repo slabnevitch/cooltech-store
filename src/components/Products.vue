@@ -29,7 +29,8 @@
           v-model="range"
           :max="max"
           :min="min"
-          
+          @input="catchInput"
+          @update:error="catchError"
           class="align-center"
           >
       </v-range-slider>
@@ -53,9 +54,9 @@
             ></v-checkbox>
 
           </v-col>
-            <!-- {{bransCheckboxes}}
-            <p></p>
-            {{checkedByBrands}} -->
+            <!-- {{bransCheckboxes}} -->
+            <!-- <p></p> -->
+            <!-- {{checkedByBrands}} -->
         </v-row>
       </v-container>
     </v-col>
@@ -77,20 +78,17 @@
             <tr v-for="(item,index) in items" :key="index">
               <td>{{item.id}}</td>
               <td>
-                <v-img
-                    class="mt-2 mb-2"
-                    max-height="100"
-                    max-width="100"
-                    :src="item.photo"
-                  ></v-img>
-                  <v-btn
-                  color="primary"
-                  text
-                    @click.stop="openImgDialog(item)" 
- 
+                <a href="#"
+                    @click.stop.prevent="openImgDialog(item)" 
                   >
-                  I accept
-              </v-btn>
+                  <v-img
+                      class="mt-2 mb-2"
+                      max-height="100"
+                      max-width="100"
+                      :src="item.photo"
+                    ></v-img>
+                </a>
+
               </td>
               <td>{{item.good}}</td>
               <td>{{item.category}}</td>
@@ -192,7 +190,7 @@
               >
             <v-card>
               <v-card-title class="text-h5 grey lighten-2">
-                Privacy Policy
+                Изображение товара
               </v-card-title>
 
               <v-card-text>
@@ -330,23 +328,33 @@ export default {
     openImgDialog(item){
       this.dialogContent = item;
       this.dialog = true;
+    },
+    catchInput(){
+      console.log('catchInput!')
+
+    },
+    catchError(){
+      console.log('catchError!')
     }
   },
   async created(){
     // console.log(this.range[0])
-    // this.bransCheckboxes = await this.$store.getters.getBrands.map(brand => ({
-    //     title: brand.brand,
-    //     state: false
-    //   })); 
-    console.log(this.range[0])
-    console.log(this.range[1])
+    await this.$store.dispatch("fetchAllData");
+    this.bransCheckboxes = await this.$store.getters.getBrands.map(brand => ({
+        title: brand.brand,
+        state: false
+      })); 
+    // console.log(this.range[0])
+    // console.log(this.range[1])
+      this.range = [0, 50000];
   },
   mounted(){
     setTimeout(() => {
-      this.range[0] = 0;
-      this.range[1] = 50000;
-      
-    })
+      this.range = [0, 50000];
+      // this.$forceUpdate()
+    }, 100);
+    console.log(this.range);
+
   }
 };
 </script>

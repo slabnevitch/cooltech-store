@@ -180,10 +180,15 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
+                    <!-- <v-text-field
                       v-model="editedItem.category"
                       label="Категория"
-                    ></v-text-field>
+                    ></v-text-field> -->
+                    <v-select
+                      v-model="selectedCategory"
+			          :items="categories.map(cat => cat.category)"
+			          label="Категория"
+			        ></v-select>
                   </v-col>
                   <v-col
                     cols="12"
@@ -272,6 +277,13 @@ export default {
             return []
         }
   	},
+  	categories: {
+  		type: Array,
+  		require: true,
+  		default() {
+            return []
+        }
+  	},
   	search: {
   		type: String,
   		require: true,
@@ -344,11 +356,12 @@ export default {
         id: '',
         photo: '',
         good: 0,
-        category: 0,
+        category: '',
         brand: '',
 		price: '0',
 		rating: '0',
-      }
+      },
+      selectedCategory: ''
     }
   },
   computed: {
@@ -369,6 +382,8 @@ export default {
 	    editItem (item) {
 	        this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
 	        this.editedItem = Object.assign({}, item)
+	        this.selectedCategory = this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)).category;
+
 	        this.editDialog = true
         },
         deleteItem (item) {
@@ -394,6 +409,8 @@ export default {
         },
 		save(){
 			if (this.editedIndex > -1) {
+				this.editedItem.category = this.selectedCategory;
+				console.log(this.editedItem)
 	          this.$store.dispatch('editProduct', {editedIndex: this.editedIndex, editedItem: this.editedItem});
 	        } else {
 	          // this.desserts.push(this.editedItem)

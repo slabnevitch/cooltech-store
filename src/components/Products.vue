@@ -19,11 +19,11 @@
           
           @change="$set(range, 1, $event)"
           ></v-text-field>
-        <div>{{range}}</div>
+        <!-- <div>{{range}}</div>
         /
         <div>{{max}}</div>
         /
-        <div>{{search}}</div>
+        <div>{{search}}</div> -->
       </div>
       <v-range-slider
           v-model="range"
@@ -66,6 +66,7 @@
   	<product-table 
       :productsToRenderInTable="productsToRenderInTable"
       :products="products"
+      :categories="categories"
       :search="search"></product-table>
     
   </v-row>
@@ -117,6 +118,7 @@ export default {
         photo: prod.photo,
         good: prod.good,
         category: this.categories.find(cat => prod.category_id === cat.id.toString()).category,
+        category_id: prod.category_id,
         brand: prod.brand,
         price: prod.price,
         rating: prod.rating

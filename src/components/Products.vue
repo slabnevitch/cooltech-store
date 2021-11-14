@@ -63,224 +63,30 @@
     <v-col class="col-md-6 col-12 text-right">
       <v-btn class="success">Добавить товар</v-btn>
     </v-col>
-  	<v-col class="col-12">
-    	<h2 class="text-center">Товары</h2>
-      
-      <v-data-table
-        :headers="header"
-        :items="productsToRenderInTable"
-        :items-per-page="5"
-        :search="search"
-        class="elevation-1"
-        >
-        <template v-slot:body="{items}">
-          <tbody>
-            <tr v-for="(item,index) in items" :key="index">
-              <td>{{item.id}}</td>
-              <td>
-                <a href="#"
-                    @click.stop.prevent="openImgDialog(item)" 
-                  >
-                  <v-img
-                      class="mt-2 mb-2"
-                      max-height="100"
-                      max-width="100"
-                      :src="item.photo"
-                    ></v-img>
-                </a>
-
-              </td>
-              <td>{{item.good}}</td>
-              <td>{{item.category}}</td>
-              <td>{{item.brand}}</td>
-              <td>{{item.price}}</td>
-              <td>{{item.rating}}</td>
-              <td>
-                <v-tooltip left>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      class="mx-2"
-                      small
-                      fab
-                      dark
-                      color="cyan"
-                      @click="onButtonClick(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                       >
-                      <v-icon dark>
-                        mdi-pencil
-                      </v-icon>
-                    </v-btn>
-
-                  </template>
-                  <span>Редактировать</span>
-                </v-tooltip>
-
-                <v-tooltip right>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      class="mx-2"
-                      small
-                      fab
-                      dark
-                      color="red"
-                      @click="onButtonClick(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                      >
-                      <v-icon dark>
-                        mdi-delete
-                      </v-icon>
-                    </v-btn>
-
-                  </template>
-                  <span>Удалить</span>
-                </v-tooltip>
-              </td>
-            </tr>
-           </tbody>
-        </template>
-        <!-- <template v-slot:item.controls="props">
-          <v-tooltip left>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                class="mx-2"
-                small
-                fab
-                dark
-                color="cyan"
-                @click="onButtonClick(props.item)"
-                v-bind="attrs"
-                v-on="on"
-                >
-                <v-icon dark>
-                  mdi-pencil
-                </v-icon>
-            </v-btn>
-
-          </template>
-          <span>Редактировать</span>
-        </v-tooltip>
-        <v-tooltip right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                class="mx-2"
-                small
-                fab
-                dark
-                color="red"
-                @click="onButtonClick(props.item)"
-                v-bind="attrs"
-                v-on="on"
-                >
-                <v-icon dark>
-                  mdi-delete
-                </v-icon>
-            </v-btn>
-
-          </template>
-          <span>Удалить</span>
-        </v-tooltip>
-      </template>    -->    
-      </v-data-table>
-              <v-dialog
-              v-model="dialog"
-              width="500"
-              >
-            <v-card>
-              <v-card-title class="text-h5 grey lighten-2">
-                Изображение товара
-              </v-card-title>
-
-              <v-card-text>
-                <v-img
-                class="mt-2 mb-2"
-
-                :src="dialogContent.photo"
-                ></v-img>
-                {{dialogContent.good}}
-              </v-card-text>
-
-              <v-divider></v-divider>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                color="primary"
-                text
-                @click="dialog = false"
-                >
-                Закрыть
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-  	</v-col>
+  	<product-table 
+      :productsToRenderInTable="productsToRenderInTable"
+      :products="products"
+      :search="search"></product-table>
     
   </v-row>
 
 </template>
 
 <script>
+  import ProductTable from '@/components/ProductTable'
 export default {
   name: "Products",
 
   data() {
     return {
       bransCheckboxes: [],
-      header: [
-        {
-
-           value: 'id',
-          text: "id",
-        },
-        {
-
-           value: 'photo',
-          text: "Изображение",
-          sortable: false
-        },
-        {
-
-           value: 'good',
-          text: "Название",
-        },
-        {
-
-           value: 'category',
-          text: "Категория",
-        },
-        {
-
-           value: 'brand',
-          text: "Бренд",
-        },
-        {
-
-           value: 'price',
-          text: "Цена",
-        },
-        {
-
-           value: 'rating',
-          text: "Рейтинг",
-        },
-        { text: "Действия", 
-          value: "controls", 
-          sortable: false 
-        }
-      ],
-
       search: '',
-       min: 0,
-      // max: 90,
-      range: [0, 50000],
-      dialog: false,
-      dialogContent: {
-        photo: 'null'
-      }
+      min: 0,
+      range: [0, 50000]
     }
+  },
+  components: {
+    ProductTable
   },
   computed: {
     categories() {
@@ -338,23 +144,12 @@ export default {
     }
   },
   async created(){
-    // console.log(this.range[0])
     await this.$store.dispatch("fetchAllData");
     this.bransCheckboxes = await this.$store.getters.getBrands.map(brand => ({
         title: brand.brand,
         state: false
       })); 
-    // console.log(this.range[0])
-    // console.log(this.range[1])
       this.range = [0, 50000];
-  },
-  mounted(){
-    setTimeout(() => {
-      this.range = [0, 50000];
-      // this.$forceUpdate()
-    }, 100);
-    console.log(this.range);
-
   }
 };
 </script>

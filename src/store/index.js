@@ -30,6 +30,12 @@ export const store = new Vuex.Store({
     unsetUser(state){
       state.user.isAuthentificated = false,
       state.user.uid = null
+    },
+    editCurrentProduct(state, payload){
+      Object.assign(state.products[payload.editedIndex], payload.editedItem)
+    },
+    deleteCurrentProduct(state, payload){
+      this.state.products.splice(payload, 1)
     }
   },
   actions: {
@@ -77,6 +83,12 @@ export const store = new Vuex.Store({
           // ctx.commit('setError', errorMessage)
           // ...
         });
+    },
+    editProduct({commit}, product){
+      commit('editCurrentProduct', product);
+    },
+    deleteProduct({commit}, index){
+      commit('deleteCurrentProduct', index);
     }
   },
   getters: {

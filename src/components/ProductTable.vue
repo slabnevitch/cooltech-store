@@ -155,7 +155,7 @@
 
         <v-dialog
           v-model="editDialog"
-          max-width="500px"
+          
           >
           	<v-card>
             <v-card-title>
@@ -372,45 +372,45 @@ export default {
       },
     },
   methods: {
-	    onButtonClick(item){
-	      console.log(item)
-	      // this.$router.push('product/' + item.id)
-	      this.editDialog = true;
-	    },
-	    openImgDialog(item){
-	      this.dialogContent = item;
-	      this.imageDialog = true;
-	    },
-	    editItem (item) {
-	        this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
+    onButtonClick(item){
+      console.log(item)
+      // this.$router.push('product/' + item.id)
+      this.editDialog = true;
+    },
+    openImgDialog(item){
+      this.dialogContent = item;
+      this.imageDialog = true;
+    },
+    editItem (item) {
+        this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
 
-	        this.editedItem = Object.assign({}, item)
+        this.editedItem = Object.assign({}, item)
 
-	        this.selectedCategory = this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)).id;
+        this.selectedCategory = this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)).id;
 
-	        this.editDialog = true
-        },
-        deleteItem (item) {
-	        this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
-	        console.log(this.editedIndex)
-	        console.log(this.products)
-	        // this.editedItem = Object.assign({}, item)
-	        this.dialogDelete = true
-	      },
-	      closeDelete () {
-	      	this.dialogDelete = false
-	      	this.$nextTick(() => {
-	      		this.editedItem = Object.assign({}, this.defaultItem)
-	      		this.editedIndex = -1
-	      	})
-	      },
-	      deleteItemConfirm () {
-	        this.$store.dispatch('deleteProduct', this.editedIndex);
-	        this.closeDelete()
-	      },
-        close(){
-        	this.editDialog = false
-        },
+        this.editDialog = true
+      },
+    deleteItem (item) {
+      this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
+      console.log(this.editedIndex)
+      console.log(this.products)
+      // this.editedItem = Object.assign({}, item)
+      this.dialogDelete = true
+    },
+    closeDelete () {
+    	this.dialogDelete = false
+    	this.$nextTick(() => {
+    		this.editedItem = Object.assign({}, this.defaultItem)
+    		this.editedIndex = -1
+    	})
+    },
+    deleteItemConfirm () {
+      this.$store.dispatch('deleteProduct', this.editedIndex);
+      this.closeDelete()
+    },
+    close(){
+    	this.editDialog = false
+    },
 		save(){
 			if (this.editedIndex > -1) {
 				this.editedItem.category_id = this.selectedCategory.toString();

@@ -1,6 +1,7 @@
 <template>
   <v-row>
     <v-col class="col-md-6 col-12">
+      <!-- {{products}} -->
       <h3>Фильтр по цене</h3>
       <div class="d-flex justify-space-between">
         <v-text-field
@@ -117,7 +118,6 @@ export default {
         id: prod.good_id,
         photo: prod.photo,
         good: prod.good,
-        category: this.categories.find(cat => prod.category_id === cat.id.toString()).category,
         category_id: prod.category_id,
         brand: prod.brand,
         price: prod.price,

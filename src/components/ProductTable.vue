@@ -1,7 +1,7 @@
 <template>
 	<v-col class="col-12">
     	<h2 class="text-center">Товары</h2>
-      	<!-- {{products}} -->
+      	<!-- {{categories}} -->
       <v-data-table
         :headers="header"
         :items="productsToRenderInTable"
@@ -27,7 +27,7 @@
 
               </td>
               <td>{{item.good}}</td>
-              <td>{{item.category}}</td>
+              <td>{{categories.find(cat => item.category_id === cat.id.toString()).category}}</td>
               <td>{{item.brand}}</td>
               <td>{{item.price}}</td>
               <td>{{item.rating}}</td>
@@ -186,9 +186,11 @@
                     ></v-text-field> -->
                     <v-select
                       v-model="selectedCategory"
-			          :items="categories.map(cat => cat.category)"
-			          label="Категория"
-			        ></v-select>
+						          :items="categories"
+						          item-value="id"
+						          item-text="category"
+						          label="Категория"
+						        ></v-select>
                   </v-col>
                   <v-col
                     cols="12"
@@ -361,7 +363,7 @@ export default {
 		price: '0',
 		rating: '0',
       },
-      selectedCategory: ''
+      selectedCategory: 0
     }
   },
   computed: {
@@ -381,8 +383,10 @@ export default {
 	    },
 	    editItem (item) {
 	        this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
+
 	        this.editedItem = Object.assign({}, item)
-	        this.selectedCategory = this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)).category;
+
+	        this.selectedCategory = this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)).id;
 
 	        this.editDialog = true
         },
@@ -409,8 +413,7 @@ export default {
         },
 		save(){
 			if (this.editedIndex > -1) {
-				this.editedItem.category = this.selectedCategory;
-				console.log(this.editedItem)
+				this.editedItem.category_id = this.selectedCategory.toString();
 	          this.$store.dispatch('editProduct', {editedIndex: this.editedIndex, editedItem: this.editedItem});
 	        } else {
 	          // this.desserts.push(this.editedItem)

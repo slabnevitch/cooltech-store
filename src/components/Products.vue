@@ -61,9 +61,6 @@
         </v-row>
       </v-container>
     </v-col>
-    <v-col class="col-md-6 col-12 text-right">
-      <v-btn class="success">Добавить товар</v-btn>
-    </v-col>
   	<product-table 
       :productsToRenderInTable="productsToRenderInTable"
       :products="products"

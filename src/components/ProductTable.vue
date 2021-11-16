@@ -9,6 +9,11 @@
         :search="search"
         class="elevation-1"
         >
+        <template v-slot:top>
+        	<v-btn class="success"
+        		@click="editItem(defaultItem)">Добавить товар</v-btn>
+
+        </template>
         <template v-slot:body="{items}">
           <tbody>
             <tr v-for="(item,index) in items" :key="index">
@@ -224,6 +229,7 @@
                       v-model="editedItem.rating"
                       label="Рейтинг"
                     ></v-text-field>
+                    {{selectedCategory}}
                   </v-col>
                 </v-row>
               </v-container>
@@ -349,19 +355,19 @@ export default {
       dialogDelete: false,
       editedIndex: -1,
       editedItem: {
-        id: '',
+        good_id: '',
         photo: '',
         good: '',
-        category: '',
+        category_id: '',
         brand: '',
 		price: '0',
 		rating: '0',
       },
       defaultItem: {
-        id: '',
+        good_id: '',
         photo: '',
-        good: 0,
-        category: '',
+        good: '',
+        category_id: '',
         brand: '',
 		price: '0',
 		rating: '0',
@@ -417,11 +423,12 @@ export default {
     	this.editDialog = false
     },
 		save(){
+			this.editedItem.category_id = this.selectedCategory.toString();
 			if (this.editedIndex > -1) {
-				this.editedItem.category_id = this.selectedCategory.toString();
 	          this.$store.dispatch('editProduct', {editedIndex: this.editedIndex, editedItem: this.editedItem});
 	        } else {
-	          // this.desserts.push(this.editedItem)
+        		this.editedItem.good_id = (this.products.length + 1).toString()
+	          this.$store.dispatch('addProduct', this.editedItem)
 	        }
 	        this.close()
 		}

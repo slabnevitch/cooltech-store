@@ -45,6 +45,9 @@ export const store = new Vuex.Store({
     },
     addNewCategory(state, payload){
       state.categories.push(payload)
+    },
+    addNewProduct(state, payload){
+      state.products.push(payload)
     }
   },
   actions: {
@@ -107,6 +110,10 @@ export const store = new Vuex.Store({
     },
     addCategory({commit}, cat){
       commit('addNewCategory', cat);
+    },
+    addProduct({commit}, prod){
+      console.log(prod)
+      commit('addNewProduct', prod);
     }
   },
   getters: {

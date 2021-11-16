@@ -34,8 +34,17 @@ export const store = new Vuex.Store({
     editCurrentProduct(state, payload){
       Object.assign(state.products[payload.editedIndex], payload.editedItem)
     },
+    editCurrentCategory(state, payload){
+      Object.assign(state.categories[payload.editedIndex], payload.editedItem)
+    },
     deleteCurrentProduct(state, payload){
-      this.state.products.splice(payload, 1)
+      state.products.splice(payload, 1)
+    },
+    deleteCurrentCategory(state, payload){
+      state.categories.splice(payload, 1)
+    },
+    addNewCategory(state, payload){
+      state.categories.push(payload)
     }
   },
   actions: {
@@ -87,8 +96,17 @@ export const store = new Vuex.Store({
     editProduct({commit}, product){
       commit('editCurrentProduct', product);
     },
+    editCategory({commit}, category){
+      commit('editCurrentCategory', category);
+    },
     deleteProduct({commit}, index){
       commit('deleteCurrentProduct', index);
+    },
+    deleteCategory({commit}, index){
+      commit('deleteCurrentCategory', index);
+    },
+    addCategory({commit}, cat){
+      commit('addNewCategory', cat);
     }
   },
   getters: {

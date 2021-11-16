@@ -27,7 +27,10 @@
 
               </td>
               <td>{{item.good}}</td>
-              <td>{{categories.find(cat => item.category_id === cat.id.toString()).category}}</td>
+              <td>
+              	<!-- {{categories.find(cat => item.category_id === cat.id.toString()).category}} -->
+              		{{category(item)}}
+              </td>
               <td>{{item.brand}}</td>
               <td>{{item.price}}</td>
               <td>{{item.rating}}</td>
@@ -369,11 +372,13 @@ export default {
   computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'Добавление товара' : 'Редактирование товара'
-      },
+      }
     },
   methods: {
+      category(item){
+      	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).category : '';
+      },
     onButtonClick(item){
-      console.log(item)
       // this.$router.push('product/' + item.id)
       this.editDialog = true;
     },
@@ -386,7 +391,7 @@ export default {
 
         this.editedItem = Object.assign({}, item)
 
-        this.selectedCategory = this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)).id;
+        this.selectedCategory = this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)) ? this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)).id : '1';
 
         this.editDialog = true
       },

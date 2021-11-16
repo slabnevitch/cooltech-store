@@ -15,6 +15,7 @@
 		            color="primary"
 		            dark
 		            class="mb-2"
+		            @click="newItem"
 		          >
 		            Добавить категорию
 		          </v-btn>
@@ -95,7 +96,7 @@
 				  				md="4"
 				  				>
 					  				<v-text-field
-					  				v-model="editedCat"
+					  				v-model="editedItem.category"
 					  				label="Категория"
 					  				></v-text-field>
 				  			</v-col>
@@ -169,9 +170,16 @@ export default {
       ],
       search: '',
       editDialog: false,
-			dialogDelete: false,
-			editedIndex: -1,
-			editedCat: ''
+		dialogDelete: false,
+		editedIndex: -1,
+		editedItem: {
+			id: '',
+ 			category: ''
+		},
+		defaultItem: {
+			id: '',
+ 			category: ''
+		}
     }
   },
   computed: {
@@ -181,8 +189,15 @@ export default {
   },
   methods: {
   	editItem (item) {
+  		this.editedIndex = this.categories.indexOf(this.categories.find(cat => cat.id === item.id));
+  		this.editedItem = Object.assign({}, item)
+  		console.log(this.editedItem)
          this.editDialog = true
       },
+    newItem(){
+    	this.editedItem = Object.assign({}, this.defaultItem)
+        this.editDialog = true
+    },
     deleteItem (item) {
       this.dialogDelete = true
     },
@@ -190,20 +205,21 @@ export default {
     	this.dialogDelete = false
     },
     deleteItemConfirm () {
-      // this.$store.dispatch('deleteProduct', this.editedIndex);
+		this.$store.dispatch('deleteCategory', this.editedIndex);
       this.closeDelete()
     },
     close(){
     	this.editDialog = false
     },
-		save(){
-			if (this.editedIndex > -1) {
-
-        } else {
-          // this.desserts.push(this.editedItem)
-        }
-        this.close()
+	save(){
+		if (this.editedIndex > -1) {
+			this.$store.dispatch('editCategory', {editedIndex: this.editedIndex, editedItem: this.editedItem});
+		} else {
+			this.editedItem.id = this.categories.length + 1;
+		  this.$store.dispatch('addCategory', this.editedItem)
 		}
+		this.close()
+	}
   }
 }
 </script>

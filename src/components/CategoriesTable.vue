@@ -1,5 +1,6 @@
 <template>
 	<v-col col="12">
+		{{categories}}
     	<h2 class="text-center">Категории</h2>
 			<v-data-table
 		    :headers="header"
@@ -29,7 +30,7 @@
 			  <template v-slot:body="{items}">
 			  	<tbody>
 				  	<tr v-for="(item,index) in items" :key="index">
-					  	<td>{{item.id}}</td>
+					  	<td>{{item.cat_id}}</td>
 					  	<td>{{item.category}}</td>
 							  	<td>
 							  		<v-tooltip left>
@@ -155,7 +156,7 @@ export default {
     return {
     	header: [
         {
-          value: 'id',
+          value: 'cat_id',
           text: "id",
         },
         {
@@ -173,11 +174,11 @@ export default {
 		dialogDelete: false,
 		editedIndex: -1,
 		editedItem: {
-			id: '',
+			cat_id: '',
  			category: ''
 		},
 		defaultItem: {
-			id: '',
+			cat_id: '',
  			category: ''
 		}
     }
@@ -185,7 +186,7 @@ export default {
   computed: {
     formTitle () {
       return this.editedIndex === -1 ? 'Добавление категории' : 'Редактирование категории';
-    },
+    }
   },
   methods: {
   	editItem (item) {
@@ -215,8 +216,7 @@ export default {
 		if (this.editedIndex > -1) {
 			this.$store.dispatch('editCategory', {editedIndex: this.editedIndex, editedItem: this.editedItem});
 		} else {
-			this.editedItem.id = this.categories.length + 1;
-		  this.$store.dispatch('addCategory', this.editedItem)
+			this.editedItem.cat_id = this.categories.length + 1;
 		  this.$store.dispatch('fetchNewCategory', this.editedItem)
 		}
 		this.close()

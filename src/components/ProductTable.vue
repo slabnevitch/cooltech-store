@@ -17,7 +17,7 @@
         <template v-slot:body="{items}">
           <tbody>
             <tr v-for="(item,index) in items" :key="index">
-              <td>{{item.id}}</td>
+              <td>{{item.good_id}}</td>
               <td>
                 <a href="#"
                     @click.stop.prevent="openImgDialog(item)" 
@@ -195,7 +195,7 @@
                     <v-select
                       v-model="selectedCategory"
 						          :items="categories"
-						          item-value="id"
+						          item-value="cat_id"
 						          item-text="category"
 						          label="Категория"
 						        ></v-select>
@@ -355,6 +355,7 @@ export default {
       dialogDelete: false,
       editedIndex: -1,
       editedItem: {
+        id: '',
         good_id: '',
         photo: '',
         good: '',
@@ -364,6 +365,7 @@ export default {
 		rating: '0',
       },
       defaultItem: {
+        id: '',
         good_id: '',
         photo: '',
         good: '',
@@ -382,7 +384,7 @@ export default {
     },
   methods: {
       category(item){
-      	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).category : '';
+      	return this.categories.find(cat => item.category_id === cat.cat_id.toString()) ? this.categories.find(cat => item.category_id === cat.cat_id.toString()).category : '';
       },
     onButtonClick(item){
       // this.$router.push('product/' + item.id)
@@ -397,11 +399,12 @@ export default {
 
         this.editedItem = Object.assign({}, item)
 
-        this.selectedCategory = this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)) ? this.categories.find(cat => cat.id === parseInt(this.editedItem.category_id)).id : '1';
+        this.selectedCategory = this.categories.find(cat => cat.cat_id === parseInt(this.editedItem.category_id)) ? this.categories.find(cat => cat.cat_id === parseInt(this.editedItem.category_id)).cat_id : '1';
 
         this.editDialog = true
       },
     deleteItem (item) {
+      console.log(item)
       this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
       console.log(this.editedIndex)
       console.log(this.products)
@@ -416,7 +419,7 @@ export default {
     	})
     },
     deleteItemConfirm () {
-      this.$store.dispatch('deleteProduct', this.editedIndex);
+      this.$store.dispatch('removeProduct', {ind: this.editedIndex, id: this.editedItem});
       this.closeDelete()
     },
     close(){

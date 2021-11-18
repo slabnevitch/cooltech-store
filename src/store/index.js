@@ -20,8 +20,7 @@ export const store = new Vuex.Store({
   },
   mutations: {
     setAllData(state, payload) {
-      console.log(payload);
-      state.categories = payload.categories;
+       state.categories = Object.keys(payload.categories).map(key => ({...payload.categories[key], id: key})) ;
       state.brands = payload.brands;
       state.products = Object.keys(payload.goods).map(key => ({...payload.goods[key], good_id: key}));
     },
@@ -68,7 +67,6 @@ export const store = new Vuex.Store({
       try {
         const info = (await firebase.database().ref(`data`).once("value")).val();
         commit("setAllData", info);
-        console.log(info);
       } catch (e) {
         console.log(e);
       }
@@ -97,20 +95,13 @@ export const store = new Vuex.Store({
           // ...
         });
     },
-    editProduct({commit}, product){
-      commit('editCurrentProduct', product);
-    },
-    editCategory({commit}, category){
-      commit('editCurrentCategory', category);
-    },
+
+    
     deleteProduct({commit}, index){
       commit('deleteCurrentProduct', index);
     },
     deleteCategory({commit}, index){
       commit('deleteCurrentCategory', index);
-    },
-    addCategory({commit}, cat){
-      commit('addNewCategory', cat);
     },
     addProduct({commit}, prod){
       console.log(prod)

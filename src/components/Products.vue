@@ -110,7 +110,7 @@ export default {
     },
     productsToRenderInTable(){
       return this.checkedByBrands.map(prod => ({
-        id: prod.good_id,
+        id: prod.id,
         photo: prod.photo,
         good: prod.good,
         category_id: prod.category_id,

@@ -217,6 +217,7 @@ export default {
 		} else {
 			this.editedItem.id = this.categories.length + 1;
 		  this.$store.dispatch('addCategory', this.editedItem)
+		  this.$store.dispatch('fetchNewCategory', this.editedItem)
 		}
 		this.close()
 	}

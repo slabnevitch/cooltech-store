@@ -4,6 +4,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
+import backend from './backend'
+
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
@@ -21,7 +23,7 @@ export const store = new Vuex.Store({
       console.log(payload);
       state.categories = payload.categories;
       state.brands = payload.brands;
-      state.products = payload.goods;
+      state.products = Object.keys(payload.goods).map(key => ({...payload.goods[key], good_id: key}));
     },
     setUser(state, userId) {
       state.user.isAuthentificated = true;
@@ -64,10 +66,9 @@ export const store = new Vuex.Store({
     },
     async fetchAllData({ commit }) {
       try {
-        const info = (
-          await firebase.database().ref(`data`).once("value")).val();
+        const info = (await firebase.database().ref(`data`).once("value")).val();
         commit("setAllData", info);
-        // console.log(info);
+        console.log(info);
       } catch (e) {
         console.log(e);
       }
@@ -121,5 +122,8 @@ export const store = new Vuex.Store({
     getBrands: (state) => state.brands,
     getCategories: (state) => state.categories,
     isAuth: (state) => state.user.isAuthentificated
+  },
+  modules: {
+    backend
   }
 });

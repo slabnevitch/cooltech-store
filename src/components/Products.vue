@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col class="col-md-6 col-12">
-      <!-- {{products}} -->
+      {{products}}
       <h3>Фильтр по цене</h3>
       <div class="d-flex justify-space-between">
         <v-text-field
@@ -30,8 +30,6 @@
           v-model="range"
           :max="max"
           :min="min"
-          @input="catchInput"
-          @update:error="catchError"
           class="align-center"
           >
       </v-range-slider>
@@ -133,13 +131,6 @@ export default {
     openImgDialog(item){
       this.dialogContent = item;
       this.dialog = true;
-    },
-    catchInput(){
-      console.log('catchInput!')
-
-    },
-    catchError(){
-      console.log('catchError!')
     }
   },
   async created(){

@@ -422,13 +422,14 @@ export default {
     close(){
     	this.editDialog = false
     },
-		save(){
+		async save(){
 			this.editedItem.category_id = this.selectedCategory.toString();
 			if (this.editedIndex > -1) {
 	          this.$store.dispatch('editProduct', {editedIndex: this.editedIndex, editedItem: this.editedItem});
 	        } else {
         		this.editedItem.good_id = (this.products.length + 1).toString()
-	          this.$store.dispatch('addProduct', this.editedItem)
+	          // this.$store.dispatch('addProduct', this.editedItem)
+            await this.$store.dispatch('fetchNewProduct', this.editedItem)
 	        }
 	        this.close()
 		}

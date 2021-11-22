@@ -139,7 +139,7 @@ export default {
         title: brand.brand,
         state: false
       })); 
-      this.range = [0, 50000];
+      this.range = [0, this.max];
   }
 };
 </script>

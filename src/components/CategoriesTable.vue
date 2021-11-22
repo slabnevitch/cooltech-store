@@ -174,10 +174,12 @@ export default {
 		dialogDelete: false,
 		editedIndex: -1,
 		editedItem: {
+			id: '',
 			cat_id: '',
  			category: ''
 		},
 		defaultItem: {
+			id: '',
 			cat_id: '',
  			category: ''
 		}

@@ -17,7 +17,7 @@
         <template v-slot:body="{items}">
           <tbody>
             <tr v-for="(item,index) in items" :key="index">
-              <td>{{item.good_id}}</td>
+              <td>{{index + 1}}</td>
               <td>
                 <a href="#"
                     @click.stop.prevent="openImgDialog(item)" 
@@ -195,7 +195,7 @@
                     <v-select
                       v-model="selectedCategory"
 						          :items="categories"
-						          item-value="cat_id"
+						          item-value="id"
 						          item-text="category"
 						          label="Категория"
 						        ></v-select>
@@ -384,7 +384,7 @@ export default {
     },
   methods: {
       category(item){
-      	return this.categories.find(cat => item.category_id === cat.cat_id.toString()) ? this.categories.find(cat => item.category_id === cat.cat_id.toString()).category : '';
+      	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).category : '';
       },
     onButtonClick(item){
       // this.$router.push('product/' + item.id)

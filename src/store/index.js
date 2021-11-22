@@ -22,7 +22,7 @@ export const store = new Vuex.Store({
     setAllData(state, payload) {
        state.categories = Object.keys(payload.categories).map(key => ({...payload.categories[key], id: key})) ;
       state.brands = payload.brands;
-      state.products = Object.keys(payload.goods).map(key => ({...payload.goods[key], good_id: key}));
+      state.products = Object.keys(payload.goods).map(key => ({...payload.goods[key], id: key}));
     },
     setUser(state, userId) {
       state.user.isAuthentificated = true;
@@ -94,14 +94,6 @@ export const store = new Vuex.Store({
           // ctx.commit('setError', errorMessage)
           // ...
         });
-    },
-
-    
-    deleteProduct({commit}, index){
-      commit('deleteCurrentProduct', index);
-    },
-    deleteCategory({commit}, index){
-      commit('deleteCurrentCategory', index);
     },
     addProduct({commit}, prod){
       console.log(prod)

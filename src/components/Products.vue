@@ -60,7 +60,7 @@
       </v-container>
     </v-col>
   	<product-table 
-      :productsToRenderInTable="productsToRenderInTable"
+      :productsToRenderInTable="checkedByBrands"
       :products="products"
       :categories="categories"
       :search="search"></product-table>
@@ -108,17 +108,17 @@ export default {
       }
       return this.productsFilterByPrice;
     },
-    productsToRenderInTable(){
-      return this.checkedByBrands.map(prod => ({
-        id: prod.id,
-        photo: prod.photo,
-        good: prod.good,
-        category_id: prod.category_id,
-        brand: prod.brand,
-        price: prod.price,
-        rating: prod.rating
-      }));
-    },
+    // productsToRenderInTable(){
+    //   return this.checkedByBrands.map(prod => ({
+    //     id: prod.id,
+    //     photo: prod.photo,
+    //     good: prod.good,
+    //     category_id: prod.category_id,
+    //     brand: prod.brand,
+    //     price: prod.price,
+    //     rating: prod.rating
+    //   }));
+    // },
     max(){
       return Math.max(...this.products.map(prod => parseInt(prod.price)));
     }

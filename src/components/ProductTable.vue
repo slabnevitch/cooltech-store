@@ -1,7 +1,7 @@
 <template>
 	<v-col class="col-12">
     	<h2 class="text-center">Товары</h2>
-      	<!-- {{categories}} -->
+      	{{categories}}
       <v-data-table
         :headers="header"
         :items="productsToRenderInTable"
@@ -406,6 +406,7 @@ export default {
     deleteItem (item) {
       console.log(item)
       this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
+      this.editedItem = Object.assign({}, item)
       console.log(this.editedIndex)
       console.log(this.products)
       // this.editedItem = Object.assign({}, item)
@@ -419,7 +420,8 @@ export default {
     	})
     },
     deleteItemConfirm () {
-      this.$store.dispatch('removeProduct', {ind: this.editedIndex, id: this.editedItem});
+
+      this.$store.dispatch('removeProduct', {ind: this.editedIndex, id: this.editedItem.id});
       this.closeDelete()
     },
     close(){

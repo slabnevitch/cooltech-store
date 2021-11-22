@@ -200,13 +200,21 @@ export default {
         this.editDialog = true
     },
     deleteItem (item) {
+    	this.editedIndex = this.categories.indexOf(this.categories.find(cat => cat.id === item.id));
+    	this.editedItem = Object.assign({}, item)
+  		console.log(item)
+
       this.dialogDelete = true
     },
     closeDelete () {
     	this.dialogDelete = false
+    	this.$nextTick(() => {
+    		this.editedItem = Object.assign({}, this.defaultItem)
+    		this.editedIndex = -1
+    	})
     },
     deleteItemConfirm () {
-		this.$store.dispatch('deleteCategory', this.editedIndex);
+		this.$store.dispatch('removeCategory', {id: this.editedItem.id, ind: this.editedIndex});
       this.closeDelete()
     },
     close(){

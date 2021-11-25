@@ -43,7 +43,7 @@ export default{
         console.error(e)
       }
     },
-    async editProduct({commit}, product){
+    async editProduct({commit, dispatch}, product){
         console.log(product)
 
       try{
@@ -51,6 +51,7 @@ export default{
         const fetchedProduct = firebase.database().ref('data/goods').child(product.editedItem.id).update(product.editedItem)
         console.log(fetchedProduct)
         commit('editCurrentProduct', product);
+        // await dispatch('fetchAllData');
         commit('offLoading');
       } catch(e){
 

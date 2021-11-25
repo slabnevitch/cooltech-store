@@ -85,6 +85,12 @@ export default {
   components: {
     ProductTable
   },
+  watch: {
+  	products(){
+  		console.log('max change!')
+  		this.range[1] = this.max
+  	}
+  },
   computed: {
     categories() {
       return this.$store.getters.getCategories;

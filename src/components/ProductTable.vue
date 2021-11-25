@@ -188,6 +188,16 @@
                     sm="6"
                     md="4"
                   >
+                    <v-file-input
+                      accept="image/*"
+                      :label="imageInputPlaceholder"
+                    ></v-file-input>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
                     <!-- <v-text-field
                       v-model="editedItem.category"
                       label="Категория"
@@ -380,6 +390,9 @@ export default {
   computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'Добавление товара' : 'Редактирование товара'
+      },
+      imageInputPlaceholder(){
+        return this.editedIndex === -1 ? 'Добавить изображение товара' : 'Изменить изображение товара'
       }
     },
   methods: {

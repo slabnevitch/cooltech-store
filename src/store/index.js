@@ -33,7 +33,7 @@ export const store = new Vuex.Store({
       state.user.uid = null
     },
     editCurrentProduct(state, payload){
-      Object.assign(state.products[payload.editedIndex], payload.editedItem)
+      state.products[payload.editedIndex] = payload.editedItem;
     },
     editCurrentCategory(state, payload){
       Object.assign(state.categories[payload.editedIndex], payload.editedItem)

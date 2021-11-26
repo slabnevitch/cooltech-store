@@ -9,18 +9,20 @@
 		    :search="search"
 		    class="elevation-1"
 		  >
-			    <template v-slot:top
-		    		class="d-flex">
+			    <template v-slot:top>
 		    		editedIndex: {{editedIndex}}
-			    	<v-spacer></v-spacer>
-		        <v-btn
-		            color="primary"
-		            dark
-		            class="mb-2"
-		            @click="newItem"
-		          >
-		            Добавить категорию
-		          </v-btn>
+		    		<div class="d-flex">
+				    	<v-spacer></v-spacer>
+			        <v-btn
+			            color="primary"
+			            dark
+			            class="mb-2"
+			            @click="newItem"
+			          >
+			            Добавить категорию
+			          </v-btn>
+		    			
+		    		</div>
 
 				    <v-text-field
 				      v-model="search"

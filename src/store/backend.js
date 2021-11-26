@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+import 'firebase/storage';
 
 export default{
   state: {
@@ -16,18 +17,63 @@ export default{
   },
   actions: {
   	async fetchNewProduct({commit, dispatch}, product){
+      console.log(product)
+      if(typeof product.photo === 'string'){
+    		try{
+    			commit('onLoading');
+    			const fetchedProduct = await firebase.database().ref(`data/goods`).push(product)
+          commit('addNewProduct', product);
+          await dispatch('fetchAllData');
+    			commit('offLoading');
+    		} catch(e){
 
-  		try{
-  			commit('onLoading');
-  			const fetchedProduct = await firebase.database().ref(`data/goods`).push(product)
-        commit('addNewProduct', product);
-        await dispatch('fetchAllData');
-  			commit('offLoading');
-  		} catch(e){
+    			throw e //пробрасываем ошибку дальше из промиса
+    			console.error(e)
+    		}
+      }else if(typeof product.photo === 'object'){
+        const newProduct = {
+          id: product.id,
+          good_id: product.good_id,
+          good: product.good,
+          category_id: product.category_id,
+          brand: product.brand,
+          price: product.price,
+          rating: product.rating,
+        }
+      let imageUrl
+      let key
+      
+      const pushResult = firebase.database().ref('data/goods').push(newProduct)
+        .then(data => {
+          
+          key = data.key
+          return key
+        })
+        .then(key => {
+          const filename = product.photo.name
+          const ext = filename.slice(filename.lastIndexOf('.'))
 
-  			throw e //пробрасываем ошибку дальше из промиса
-  			console.error(e)
-  		}
+          return firebase.storage().ref('goodsImages/' + key + ext).put(product.photo)
+        })
+        .then(fileData => {
+          return fileData.ref.getDownloadURL()
+        })
+        .then((pathToImg) => {
+          return firebase.database().ref('data/goods').child(key).update({photo: pathToImg, id: key})
+        })
+        .then(async() => {
+          commit('addNewProduct', product);
+          await dispatch('fetchAllData');
+          commit('offLoading');
+          return true
+        })
+        .catch(e => {
+          commit('offLoading');
+          console.error(e)
+        })
+
+      return pushResult
+      }
   	},
     async fetchNewCategory({commit, dispatch}, category){
       console.log(category)

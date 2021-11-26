@@ -31,6 +31,7 @@ export default{
     			console.error(e)
     		}
       }else if(typeof product.photo === 'object'){
+        // return dispatch('fetchNewProductWithImg', product); 
         const newProduct = {
           id: product.id,
           good_id: product.good_id,
@@ -52,7 +53,7 @@ export default{
         .then(key => {
           const filename = product.photo.name
           const ext = filename.slice(filename.lastIndexOf('.'))
-
+          console.log(key + ext)
           return firebase.storage().ref('goodsImages/' + key + ext).put(product.photo)
         })
         .then(fileData => {
@@ -75,6 +76,9 @@ export default{
       return pushResult
       }
   	},
+    async fetchNewProductWithImg({commit, dispatch}, product){
+      
+    },
     async fetchNewCategory({commit, dispatch}, category){
       console.log(category)
       try{
@@ -90,19 +94,54 @@ export default{
       }
     },
     async editProduct({commit, dispatch}, product){
-        console.log(product)
+      console.log(product)
+      if(typeof product.editedItem.photo === 'string'){
+        console.log('string in editProduct')
+        try{
+          commit('onLoading');
+          const fetchedProduct = firebase.database().ref('data/goods').child(product.editedItem.id).update(product.editedItem)
+          console.log(fetchedProduct)
+          commit('editCurrentProduct', product);
+          // await dispatch('fetchAllData');
+          commit('offLoading');
+        } catch(e){
 
-      try{
-        commit('onLoading');
-        const fetchedProduct = firebase.database().ref('data/goods').child(product.editedItem.id).update(product.editedItem)
-        console.log(fetchedProduct)
-        commit('editCurrentProduct', product);
-        // await dispatch('fetchAllData');
-        commit('offLoading');
-      } catch(e){
+            throw e //пробрасываем ошибку дальше из промиса
+            console.error(e)
+          }
+        }else if(typeof product.editedItem.photo === 'object'){
+        console.log('object in editProduct')
+        const newProduct = {
+          id: product.editedItem.id,
+          good_id: product.editedItem.good_id,
+          good: product.editedItem.good,
+          category_id: product.editedItem.category_id,
+          brand: product.editedItem.brand,
+          price: product.editedItem.price,
+          rating: product.editedItem.rating
+        }
+        firebase.storage().ref('goodsImages').child(product.editedItem.id+'.jpg').delete();
 
-        throw e //пробрасываем ошибку дальше из промиса
-        console.error(e)
+      let imageUrl
+      let key = product.editedItem.id
+      
+      const pushResult = firebase.storage().ref('goodsImages/' + key + '.jpg').put(product.editedItem.photo)
+        .then(fileData => {
+          return fileData.ref.getDownloadURL()
+        })
+        .then((pathToImg) => {
+          return firebase.database().ref('data/goods').child(key).update({...newProduct, photo: pathToImg})
+        })
+        .then(async() => {
+          commit('editCurrentProduct', product);
+          await dispatch('fetchAllData');
+          commit('offLoading');
+          return true
+        })
+        .catch(e => {
+          commit('offLoading');
+          console.error(e)
+        })
       }
     },
 
@@ -124,6 +163,7 @@ export default{
       try{
         commit('onLoading');
         const fetchedProduct = firebase.database().ref('data/goods').child(product.id).remove()
+        firebase.storage().ref('goodsImages').child(product.id+'.jpg').delete();
         commit('deleteCurrentProduct', product.ind);
         commit('offLoading');
       } catch(e){

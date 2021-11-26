@@ -15,6 +15,10 @@
           	<v-btn class="success"
           		@click="editItem(defaultItem)">Добавить товар</v-btn>
           </div>
+          editedIndex: {{editedIndex}}
+          <v-btn class="danger"
+              @click="deleteImg">Remove image</v-btn>
+          </div>
         </template>
         <template v-slot:body="{items}">
           <tbody>
@@ -195,7 +199,6 @@
                       accept="image/*"
                       v-model="loadedImg"
                       :label="imageInputPlaceholder"
-                      @change="imgSelect($event)"
                     ></v-file-input>
                   </v-col>
                   <v-col
@@ -245,6 +248,8 @@
                       label="Рейтинг"
                     ></v-text-field>
                     <!-- {{selectedCategory}} -->
+                    loadedImg: {{loadedImg}}
+                    editedIndex: {{editedIndex}}
                   </v-col>
                 </v-row>
               </v-container>
@@ -285,6 +290,9 @@
 </template>
 
 <script>
+  import firebase from "firebase/app";
+  import 'firebase/storage';
+
 export default {
 
   name: 'ProductTable',
@@ -402,24 +410,9 @@ export default {
       }
     },
   methods: {
-    imgSelect(evt){
-        console.log(this.loadedImg)
+      deleteImg(){
 
-        // let file = this.loadedImg,
-        //   filename = file.name;
-
-        // if(filename.lastIndexOf('.') <= 0){
-        //   return alert('прикрепите файл с правильным форматом')
-        // }
-
-        // let reader = new FileReader()
-        // reader.readAsDataURL(file);
-
-        // reader.onload = () => {
-        //     this.imgUrl = reader.result
-        //   };
-        //   this.loadedImg = file
-
+        firebase.storage().ref('goodsImages').child('-MpQw-lEqSBo7xN7jkgb.jpg').delete()
       },
       category(item){
       	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).category : '';
@@ -440,8 +433,6 @@ export default {
         console.log(this.loadedImg )
 
         this.selectedCategory = this.categories.find(cat => cat.id === this.editedItem.category_id) ? this.categories.find(cat => cat.id === this.editedItem.category_id).id : '';
-
-
         this.editDialog = true
       },
     deleteItem (item) {
@@ -469,6 +460,7 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+        this.loadedImg = null
       })
     },
 		async save(){
@@ -478,13 +470,15 @@ export default {
       }
       console.log(typeof this.editedItem.photo )
 			if (this.editedIndex > -1) {
+
+            console.log('editedIndex > -1' )
 	          this.$store.dispatch('editProduct', {editedIndex: this.editedIndex, editedItem: this.editedItem});
-	        } else {
-        		this.editedItem.good_id = (this.products.length + 1).toString()
-	          // this.$store.dispatch('addProduct', this.editedItem)
-            await this.$store.dispatch('fetchNewProduct', this.editedItem)
-	        }
-	        this.close()
+        } else {
+            console.log('editedIndex <= -1' )
+      		this.editedItem.good_id = (this.products.length + 1).toString()
+          await this.$store.dispatch('fetchNewProduct', this.editedItem)
+        }
+        this.close()
 		}
 	}
 }

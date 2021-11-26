@@ -239,7 +239,7 @@
                       v-model="editedItem.rating"
                       label="Рейтинг"
                     ></v-text-field>
-                    {{selectedCategory}}
+                    <!-- {{selectedCategory}} -->
                   </v-col>
                 </v-row>
               </v-container>
@@ -412,7 +412,9 @@ export default {
 
         this.editedItem = Object.assign({}, item)
 
-        this.selectedCategory = this.categories.find(cat => cat.cat_id === parseInt(this.editedItem.category_id)) ? this.categories.find(cat => cat.cat_id === parseInt(this.editedItem.category_id)).cat_id : '1';
+        this.selectedCategory = this.categories.find(cat => cat.id === this.editedItem.category_id) ? this.categories.find(cat => cat.id === this.editedItem.category_id).id : '';
+
+        // console.log(this.categories.find(cat => cat.id === this.editedItem.category_id))
 
         this.editDialog = true
       },
@@ -439,6 +441,10 @@ export default {
     },
     close(){
     	this.editDialog = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
     },
 		async save(){
 			this.editedItem.category_id = this.selectedCategory.toString();

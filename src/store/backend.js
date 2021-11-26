@@ -34,7 +34,7 @@ export default{
       try{
         commit('onLoading');
         const fetchedCategory = await firebase.database().ref(`data/categories`).push(category)
-        // commit('addNewCategory', category);
+        commit('addNewCategory', category);
         await dispatch('fetchAllData');
         commit('offLoading');
       } catch(e){

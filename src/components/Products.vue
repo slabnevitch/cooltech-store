@@ -31,6 +31,7 @@
           :max="max"
           :min="min"
           class="align-center"
+          :key="sliderKey"
           >
       </v-range-slider>
     </v-col>
@@ -79,7 +80,8 @@ export default {
       bransCheckboxes: [],
       search: '',
       min: 0,
-      range: [0, 50000]
+      range: [0, 50000],
+      sliderKey: 0
     }
   },
   components: {
@@ -87,8 +89,9 @@ export default {
   },
   watch: {
   	products(){
-  		console.log('max change!')
+  		console.log('max change! = ' + this.max)
   		this.range[1] = this.max
+      this.sliderKey += 1 //принудиткльное обновление слайдера через аттрибут :key
   	}
   },
   computed: {

@@ -11,6 +11,7 @@
 		  >
 			    <template v-slot:top
 		    		class="d-flex">
+		    		editedIndex: {{editedIndex}}
 			    	<v-spacer></v-spacer>
 		        <v-btn
 		            color="primary"
@@ -221,9 +222,14 @@ export default {
     },
     close(){
     	this.editDialog = false
+    	this.$nextTick(() => {
+    		this.editedItem = Object.assign({}, this.defaultItem)
+    		this.editedIndex = -1
+    	})
     },
 	save(){
 		if (this.editedIndex > -1) {
+  		console.log("при добавлении категории срабатывает if!")
 			this.$store.dispatch('editCategory', {editedIndex: this.editedIndex, editedItem: this.editedItem});
 		} else {
 			this.editedItem.cat_id = this.categories.length + 1;

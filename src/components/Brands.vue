@@ -1,26 +1,9 @@
 <template>
   <v-row>
-  	<v-col col="12">
-    	<h2 class="text-center">Бренды</h2>
-      <v-data-table
-        :headers="header"
-        :items="brands"
-        :items-per-page="10"
-        :search="search"
-        class="elevation-1"
-        >
-        <template v-slot:top>
-          <v-text-field
-          v-model="search"
-          label="Поиск"
-          class="mx-4"
-          ></v-text-field>
-        </template>
-      </v-data-table>
-  	</v-col>
-    
+    <categories-table :categories="brands"
+      :header="header"
+      :keyword="'brands'"></categories-table>
   </v-row>
-	</div>
 </template>
 
 <script>

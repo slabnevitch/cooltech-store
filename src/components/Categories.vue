@@ -1,6 +1,8 @@
 <template>
   <v-row>
-    <categories-table :categories="categories"></categories-table>
+    <categories-table :categories="categories"
+      :header="header"
+      :keyword="'categories'"></categories-table>
   </v-row>
 </template>
 
@@ -11,7 +13,21 @@ export default {
   
   data() {
     return {
-      
+      header: [
+        {
+          value: 'cat_id',
+          text: "id",
+        },
+        {
+          value: 'category',
+          text: "категория",
+        },
+        { 
+          text: "Действия", 
+          value: "controls", 
+          sortable: false 
+        }
+      ]
     }
   },
   components: {

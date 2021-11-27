@@ -152,26 +152,21 @@ export default {
   		type: Array,
   		required: true,
   		default: () => []
+  	},
+	header: {
+  		type: Array,
+  		required: true,
+  		default: () => []
+  	},
+  	keyword: {
+  		type: String,
+  		required: true
   	}
   },
 
   data () {
     return {
-    	header: [
-        {
-          value: 'cat_id',
-          text: "id",
-        },
-        {
-          value: 'category',
-          text: "категория",
-        },
-        { 
-        	text: "Действия", 
-          value: "controls", 
-          sortable: false 
-        }
-      ],
+    	
       search: '',
       editDialog: false,
 		dialogDelete: false,
@@ -232,7 +227,7 @@ export default {
 	save(){
 		if (this.editedIndex > -1) {
   		console.log("при добавлении категории срабатывает if!")
-			this.$store.dispatch('editCategory', {editedIndex: this.editedIndex, editedItem: this.editedItem});
+			this.$store.dispatch('editCategory', {editedIndex: this.editedIndex, editedItem: this.editedItem, keyword: this.keyword});
 		} else {
 			this.editedItem.cat_id = this.categories.length + 1;
 		  this.$store.dispatch('fetchNewCategory', this.editedItem)

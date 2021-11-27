@@ -120,6 +120,15 @@ export default{
           price: product.editedItem.price,
           rating: product.editedItem.rating
         }
+        firebase.storage().ref('goodsImages').child(product.editedItem.id+'.jpg').getDownloadURL().then(onResolve, onReject);
+
+        function onResolve(foundURL) {
+          console.log(foundURL)
+        }
+
+        function onReject(error) {
+            console.log(error.code);
+        };
         firebase.storage().ref('goodsImages').child(product.editedItem.id+'.jpg').delete();
 
       let imageUrl

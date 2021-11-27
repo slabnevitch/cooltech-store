@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col class="col-md-6 col-12">
-      {{products}}
+      <!-- {{products}} -->
       <h3>Фильтр по цене</h3>
       <div class="d-flex justify-space-between">
         <v-text-field
@@ -20,11 +20,6 @@
           
           @change="$set(range, 1, $event)"
           ></v-text-field>
-        <!-- <div>{{range}}</div>
-        /
-        <div>{{max}}</div>
-        /
-        <div>{{search}}</div> -->
       </div>
       <v-range-slider
           v-model="range"
@@ -54,9 +49,6 @@
             ></v-checkbox>
 
           </v-col>
-            <!-- {{bransCheckboxes}} -->
-            <!-- <p></p> -->
-            <!-- {{checkedByBrands}} -->
         </v-row>
       </v-container>
     </v-col>

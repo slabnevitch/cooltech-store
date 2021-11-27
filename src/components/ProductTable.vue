@@ -1,7 +1,7 @@
 <template>
 	<v-col class="col-12">
     	<h2 class="text-center">Товары</h2>
-      	{{categories}}
+      	<!-- {{categories}} -->
       <v-data-table
         :headers="header"
         :items="productsToRenderInTable"
@@ -136,7 +136,6 @@
       </v-data-table>
               <v-dialog
               v-model="imageDialog"
-              width="500"
               >
             <v-card>
               <v-card-title class="text-h5 grey lighten-2">
@@ -149,7 +148,7 @@
 
                 :src="dialogContent.photo"
                 ></v-img>
-                {{dialogContent.good}}
+                <!-- {{dialogContent.good}} -->
               </v-card-text>
 
               <v-divider></v-divider>
@@ -171,6 +170,10 @@
           v-model="editDialog"
           
           >
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation>
           	<v-card>
             <v-card-title>
               <span class="text-h5">{{formTitle}}</span>
@@ -185,6 +188,7 @@
                     md="4"
                   >
                     <v-text-field
+                      :rules="rules"
                       v-model="editedItem.good"
                       label="Название"
                     ></v-text-field>
@@ -195,6 +199,7 @@
                     md="4"
                   >
                     <v-file-input
+                      :rules="rules"
                       type="file"
                       accept="image/*"
                       v-model="loadedImg"
@@ -211,6 +216,7 @@
                       label="Категория"
                     ></v-text-field> -->
                     <v-select
+                      :rules="rules"
                       v-model="selectedCategory"
 						          :items="categories"
 						          item-value="id"
@@ -224,6 +230,7 @@
                     md="4"
                   >
                     <v-text-field
+                      :rules="rules"
                       v-model="editedItem.brand"
                       label="Бренд"
                     ></v-text-field>
@@ -234,6 +241,7 @@
                     md="4"
                   >
                     <v-text-field
+                      :rules="rules"
                       v-model="editedItem.price"
                       label="Цена"
                     ></v-text-field>
@@ -244,6 +252,7 @@
                     md="4"
                   >
                     <v-text-field
+                      :rules="rules"
                       v-model="editedItem.rating"
                       label="Рейтинг"
                     ></v-text-field>
@@ -273,6 +282,7 @@
               </v-btn>
             </v-card-actions>
           </v-card>
+        </v-form>
           </v-dialog>
 
           <v-dialog v-model="dialogDelete" max-width="500px">
@@ -370,6 +380,15 @@ export default {
           sortable: false 
         }
       ],
+      rules: [
+        value => !!value || 'Обязательное поле'
+        
+      ],
+      validateImgInput: [
+        value => (value !== null && value !== '') || 'Обязательное поле'
+        // value => !value || 'required'
+      ], 
+      valid: true,
       dialogContent: {
         photo: 'null'
       },
@@ -384,8 +403,8 @@ export default {
         good: '',
         category_id: '',
         brand: '',
-		price: '0',
-		rating: '0',
+    		price: '',
+    		rating: '',
       },
       defaultItem: {
         id: '',
@@ -394,8 +413,8 @@ export default {
         good: '',
         category_id: '',
         brand: '',
-		price: '0',
-		rating: '0',
+    		price: '',
+    		rating: '',
       },
       selectedCategory: 0,
       loadedImg: null
@@ -406,10 +425,17 @@ export default {
         return this.editedIndex === -1 ? 'Добавление товара' : 'Редактирование товара'
       },
       imageInputPlaceholder(){
-        return this.editedIndex === -1 ? 'Добавить изображение товара' : 'Изменить изображение товара'
+        return this.editedIndex === -1 ? 'Добавить изображение товара' : 'Изменить изображение товара' || 'required'
       }
     },
   methods: {
+      validate () {
+        console.log('validate') 
+        return this.$refs.form.validate()
+      },
+      // validateImgInput(){
+      //   return [() => typeof this.editedItem.photo === 'string' || typeof this.editedItem.photo === 'object' || 'required'] ;
+      // },
       deleteImg(){
 
         firebase.storage().ref('goodsImages').child('-MpQw-lEqSBo7xN7jkgb.jpg').delete()
@@ -430,6 +456,7 @@ export default {
 
         this.editedItem = Object.assign({}, item)
         console.log(typeof this.editedItem.photo )
+        this.loadedImg = this.editedItem.photo 
         console.log(this.loadedImg )
 
         this.selectedCategory = this.categories.find(cat => cat.id === this.editedItem.category_id) ? this.categories.find(cat => cat.id === this.editedItem.category_id).id : '';
@@ -457,6 +484,7 @@ export default {
     },
     close(){
     	this.editDialog = false
+      this.$refs.form.resetValidation()
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
@@ -464,8 +492,15 @@ export default {
       })
     },
 		async save(){
+      if(!this.validate()){
+        // this.$nextTick(() => {
+        //   this.editedItem = Object.assign({}, this.defaultItem)
+        //   this.editedIndex = -1
+        // })
+        return
+      } 
 			this.editedItem.category_id = this.selectedCategory.toString();
-      if(this.loadedImg){
+      if(typeof this.loadedImg === 'object'){
         this.editedItem.photo = this.loadedImg
       }
       console.log(typeof this.editedItem.photo )
@@ -478,6 +513,7 @@ export default {
       		this.editedItem.good_id = (this.products.length + 1).toString()
           await this.$store.dispatch('fetchNewProduct', this.editedItem)
         }
+        
         this.close()
 		}
 	}

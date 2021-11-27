@@ -43,6 +43,7 @@ export default{
         }
       let imageUrl
       let key
+      let ext
       
       const pushResult = firebase.database().ref('data/goods').push(newProduct)
         .then(data => {
@@ -52,7 +53,7 @@ export default{
         })
         .then(key => {
           const filename = product.photo.name
-          const ext = filename.slice(filename.lastIndexOf('.'))
+          ext = filename.slice(filename.lastIndexOf('.'))
           console.log(key + ext)
           return firebase.storage().ref('goodsImages/' + key + ext).put(product.photo)
         })
@@ -60,7 +61,7 @@ export default{
           return fileData.ref.getDownloadURL()
         })
         .then((pathToImg) => {
-          return firebase.database().ref('data/goods').child(key).update({photo: pathToImg, id: key})
+          return firebase.database().ref('data/goods').child(key).update({photo: pathToImg, id: key, ext})
         })
         .then(async() => {
           commit('addNewProduct', product);
@@ -120,7 +121,8 @@ export default{
           price: product.editedItem.price,
           rating: product.editedItem.rating
         }
-        firebase.storage().ref('goodsImages').child(product.editedItem.id+'.jpg').getDownloadURL().then(onResolve, onReject);
+        let key = product.editedItem.id
+        firebase.storage().ref('goodsImages').child(key + product.editedItem.ext).getDownloadURL().then(onResolve, onReject);
 
         function onResolve(foundURL) {
           console.log(foundURL)
@@ -129,17 +131,17 @@ export default{
         function onReject(error) {
             console.log(error.code);
         };
-        firebase.storage().ref('goodsImages').child(product.editedItem.id+'.jpg').delete();
+        firebase.storage().ref('goodsImages').child(key + product.editedItem.ext).delete();
 
-      let imageUrl
-      let key = product.editedItem.id
+        const filename = product.editedItem.photo.name,
+              ext = filename.slice(filename.lastIndexOf('.'))
       
-      const pushResult = firebase.storage().ref('goodsImages/' + key + '.jpg').put(product.editedItem.photo)
+      const pushResult = firebase.storage().ref('goodsImages/' + key + ext).put(product.editedItem.photo)
         .then(fileData => {
           return fileData.ref.getDownloadURL()
         })
         .then((pathToImg) => {
-          return firebase.database().ref('data/goods').child(key).update({...newProduct, photo: pathToImg})
+          return firebase.database().ref('data/goods').child(key).update({...newProduct, photo: pathToImg, ext})
         })
         .then(async() => {
           commit('editCurrentProduct', product);

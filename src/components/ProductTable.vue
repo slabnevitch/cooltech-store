@@ -16,9 +16,6 @@
           		@click="editItem(defaultItem)">Добавить товар</v-btn>
           </div>
           editedIndex: {{editedIndex}}
-          <v-btn class="danger"
-              @click="deleteImg">Remove image</v-btn>
-          </div>
         </template>
         <template v-slot:body="{items}">
           <tbody>
@@ -405,6 +402,7 @@ export default {
         brand: '',
     		price: '',
     		rating: '',
+        ext: ''
       },
       defaultItem: {
         id: '',
@@ -415,6 +413,7 @@ export default {
         brand: '',
     		price: '',
     		rating: '',
+        ext: ''
       },
       selectedCategory: 0,
       loadedImg: null
@@ -429,20 +428,13 @@ export default {
       }
     },
   methods: {
-      validate () {
-        console.log('validate') 
-        return this.$refs.form.validate()
-      },
-      // validateImgInput(){
-      //   return [() => typeof this.editedItem.photo === 'string' || typeof this.editedItem.photo === 'object' || 'required'] ;
-      // },
-      deleteImg(){
-
-        firebase.storage().ref('goodsImages').child('-MpQw-lEqSBo7xN7jkgb.jpg').delete()
-      },
-      category(item){
-      	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).category : '';
-      },
+    validate () {
+      console.log('validate') 
+      return this.$refs.form.validate()
+    },
+    category(item){
+    	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).category : '';
+    },
     onButtonClick(item){
       // this.$router.push('product/' + item.id)
       this.editDialog = true;
@@ -452,6 +444,7 @@ export default {
       this.imageDialog = true;
     },
     editItem (item) {
+
         this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
 
         this.editedItem = Object.assign({}, item)
@@ -461,6 +454,7 @@ export default {
 
         this.selectedCategory = this.categories.find(cat => cat.id === this.editedItem.category_id) ? this.categories.find(cat => cat.id === this.editedItem.category_id).id : '';
         this.editDialog = true
+        this.$refs.form.resetValidation()
       },
     deleteItem (item) {
       this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
@@ -484,8 +478,9 @@ export default {
     },
     close(){
     	this.editDialog = false
-      this.$refs.form.resetValidation()
+      
       this.$nextTick(() => {
+        this.$refs.form.resetValidation()
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
         this.loadedImg = null

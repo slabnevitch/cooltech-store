@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col class="col-md-6 col-12">
-      <!-- {{products}} -->
+      <pre>{{products}}</pre>
       <h3>Фильтр по цене</h3>
       <div class="d-flex justify-space-between">
         <v-text-field

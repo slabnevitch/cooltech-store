@@ -20,9 +20,12 @@ export const store = new Vuex.Store({
   },
   mutations: {
     setAllData(state, payload) {
-       state.categories = Object.keys(payload.categories).map(key => ({...payload.categories[key], id: key})) ;
+
+      state.categories = Object.keys(payload.categories).map(key => ({...payload.categories[key], id: key})) ;
       state.brands = payload.brands;
-      state.products = Object.keys(payload.goods).map(key => ({...payload.goods[key], id: key}));
+      if(payload.goods){
+        state.products = Object.keys(payload.goods).map(key => ({...payload.goods[key], id: key}));
+      }
     },
     setUser(state, userId) {
       state.user.isAuthentificated = true;

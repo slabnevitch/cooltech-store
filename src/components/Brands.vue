@@ -7,9 +7,12 @@
 </template>
 
 <script>
+  import CategoriesTable from '@/components/CategoriesTable'
 export default {
   name: "Brands",
-
+  components: {
+    CategoriesTable
+  },
   data() {
     return {
       header: [

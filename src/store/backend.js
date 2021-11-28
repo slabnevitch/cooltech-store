@@ -84,7 +84,7 @@ export default{
       console.log(category)
       try{
         commit('onLoading');
-        const fetchedCategory = await firebase.database().ref(`data/categories`).push(category)
+        const fetchedCategory = await firebase.database().ref('data/' + category.keyword).push(category.editedItem)
         commit('addNewCategory', category);
         await dispatch('fetchAllData');
         commit('offLoading');
@@ -160,7 +160,7 @@ export default{
         console.log(category)
        try{
         commit('onLoading');
-        const fetchedCategory = firebase.database().ref('data/categories').child(category.editedItem.id).update(category.editedItem)
+        const fetchedCategory = firebase.database().ref('data/' + category.keyword).child(category.editedItem.id).update(category.editedItem)
         
         commit('editCurrentCategory', category);
         commit('offLoading');
@@ -187,9 +187,9 @@ export default{
         console.log(category)
        try{
         commit('onLoading');
-        const fetchedCategory = firebase.database().ref('data/categories').child(category.id).remove()
+        const fetchedCategory = firebase.database().ref('data/' + category.keyword).child(category.id).remove()
         
-        commit('deleteCurrentCategory', category.ind);
+        commit('deleteCurrentCategory', {ind: category.ind, keyword: category.keyword});
         commit('offLoading');
       } catch(e){
 

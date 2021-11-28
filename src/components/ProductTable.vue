@@ -217,7 +217,7 @@
                       v-model="selectedCategory"
 						          :items="categories"
 						          item-value="id"
-						          item-text="category"
+						          item-text="title"
 						          label="Категория"
 						        ></v-select>
                   </v-col>

@@ -1,6 +1,7 @@
 <template>
 	<v-col col="12">
-		{{categories}}
+		<!-- {{categories}} -->
+		{{keyword}}
     	<h2 class="text-center">Категории</h2>
 			<v-data-table
 		    :headers="header"
@@ -19,7 +20,7 @@
 			            class="mb-2"
 			            @click="newItem"
 			          >
-			            Добавить категорию
+			            Добавить {{titleKeys[keyword][1]}}
 			          </v-btn>
 		    			
 		    		</div>
@@ -34,7 +35,7 @@
 			  	<tbody>
 				  	<tr v-for="(item,index) in items" :key="index">
 					  	<td>{{item.cat_id}}</td>
-					  	<td>{{item.category}}</td>
+					  	<td>{{item.title}}</td>
 							  	<td>
 							  		<v-tooltip left>
 							  			<template v-slot:activator="{ on, attrs }">
@@ -100,7 +101,7 @@
 				  				md="4"
 				  				>
 					  				<v-text-field
-					  				v-model="editedItem.category"
+					  				v-model="editedItem.title"
 					  				label="Категория"
 					  				></v-text-field>
 				  			</v-col>
@@ -166,7 +167,10 @@ export default {
 
   data () {
     return {
-    	
+    	titleKeys: {
+    		categories: ['категории', 'категорию'],
+    		brands: ['бренда', 'бренд']
+    	},
       search: '',
       editDialog: false,
 		dialogDelete: false,
@@ -174,19 +178,20 @@ export default {
 		editedItem: {
 			id: '',
 			cat_id: '',
- 			category: ''
+ 			title: ''
 		},
 		defaultItem: {
 			id: '',
 			cat_id: '',
- 			category: ''
+ 			title: ''
 		}
     }
   },
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'Добавление категории' : 'Редактирование категории';
+      return this.editedIndex === -1 ? 'Добавление ' + this.titleKeys[this.keyword][0] : 'Редактирование ' + this.titleKeys[this.keyword][0];
     }
+    
   },
   methods: {
   	editItem (item) {
@@ -214,7 +219,7 @@ export default {
     	})
     },
     deleteItemConfirm () {
-		this.$store.dispatch('removeCategory', {id: this.editedItem.id, ind: this.editedIndex});
+		this.$store.dispatch('removeCategory', {id: this.editedItem.id, ind: this.editedIndex, keyword: this.keyword});
       this.closeDelete()
     },
     close(){
@@ -230,7 +235,7 @@ export default {
 			this.$store.dispatch('editCategory', {editedIndex: this.editedIndex, editedItem: this.editedItem, keyword: this.keyword});
 		} else {
 			this.editedItem.cat_id = this.categories.length + 1;
-		  this.$store.dispatch('fetchNewCategory', this.editedItem)
+		  this.$store.dispatch('fetchNewCategory', {editedItem: this.editedItem, keyword: this.keyword})
 		}
 		this.close()
 	}

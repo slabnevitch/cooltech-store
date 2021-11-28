@@ -20,9 +20,12 @@ export const store = new Vuex.Store({
   },
   mutations: {
     setAllData(state, payload) {
-
-      state.categories = Object.keys(payload.categories).map(key => ({...payload.categories[key], id: key})) ;
-      state.brands = payload.brands;
+      if(payload.categories){
+        state.categories = Object.keys(payload.categories).map(key => ({...payload.categories[key], id: key})) ;
+      }
+      if(payload.brands){
+        state.brands = Object.keys(payload.brands).map(key => ({...payload.brands[key], id: key}));
+      }
       if(payload.goods){
         state.products = Object.keys(payload.goods).map(key => ({...payload.goods[key], id: key}));
       }
@@ -40,16 +43,16 @@ export const store = new Vuex.Store({
       state.products.splice(payload.editedIndex, 1, payload.editedItem)
     },
     editCurrentCategory(state, payload){
-      Object.assign(state.categories[payload.editedIndex], payload.editedItem)
+      Object.assign(state[payload.keyword][payload.editedIndex], payload.editedItem)
     },
     deleteCurrentProduct(state, payload){
       state.products.splice(payload, 1)
     },
     deleteCurrentCategory(state, payload){
-      state.categories.splice(payload, 1)
+      state[payload.keyword].splice(payload.ind, 1)
     },
     addNewCategory(state, payload){
-      state.categories.push(payload)
+      state[payload.keyword].push(payload.editedItem)
     },
     addNewProduct(state, payload){
       state.products.push(payload)

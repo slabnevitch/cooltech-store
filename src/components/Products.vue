@@ -137,7 +137,7 @@ export default {
   async created(){
     await this.$store.dispatch("fetchAllData");
     this.bransCheckboxes = await this.$store.getters.getBrands.map(brand => ({
-        title: brand.brand,
+        title: brand.title,
         state: false
       })); 
       this.range = [0, this.max];

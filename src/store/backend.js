@@ -27,10 +27,11 @@ export default{
     			commit('offLoading');
     		} catch(e){
 
-    			throw e //пробрасываем ошибку дальше из промиса
+    			// throw e //пробрасываем ошибку дальше из промиса
     			console.error(e)
     		}
       }else if(typeof product.photo === 'object'){
+          commit('onLoading');
         // return dispatch('fetchNewProductWithImg', product); 
         const newProduct = {
           id: product.id,
@@ -89,8 +90,9 @@ export default{
         await dispatch('fetchAllData');
         commit('offLoading');
       } catch(e){
+        commit('offLoading');
 
-        throw e //пробрасываем ошибку дальше из промиса
+        // throw e //пробрасываем ошибку дальше из промиса
         console.error(e)
       }
     },
@@ -100,17 +102,19 @@ export default{
         console.log('string in editProduct')
         try{
           commit('onLoading');
-          const fetchedProduct = firebase.database().ref('data/goods').child(product.editedItem.id).update(product.editedItem)
+          const fetchedProduct = await firebase.database().ref('data/goods').child(product.editedItem.id).update(product.editedItem)
           console.log(fetchedProduct)
           commit('editCurrentProduct', product);
           // await dispatch('fetchAllData');
           commit('offLoading');
         } catch(e){
+          commit('offLoading');
 
-            throw e //пробрасываем ошибку дальше из промиса
+            // throw e //пробрасываем ошибку дальше из промиса
             console.error(e)
           }
         }else if(typeof product.editedItem.photo === 'object'){
+          commit('onLoading');
         console.log('object in editProduct')
         const newProduct = {
           id: product.editedItem.id,
@@ -122,7 +126,7 @@ export default{
           rating: product.editedItem.rating
         }
         let key = product.editedItem.id
-        firebase.storage().ref('goodsImages').child(key + product.editedItem.ext).getDownloadURL().then(onResolve, onReject);
+        await firebase.storage().ref('goodsImages').child(key + product.editedItem.ext).getDownloadURL().then(onResolve, onReject);
 
         function onResolve(foundURL) {
           console.log(foundURL)
@@ -131,7 +135,7 @@ export default{
         function onReject(error) {
             console.log(error.code);
         };
-        firebase.storage().ref('goodsImages').child(key + product.editedItem.ext).delete();
+        await firebase.storage().ref('goodsImages').child(key + product.editedItem.ext).delete();
 
         const filename = product.editedItem.photo.name,
               ext = filename.slice(filename.lastIndexOf('.'))
@@ -166,7 +170,8 @@ export default{
         commit('offLoading');
       } catch(e){
 
-        throw e //пробрасываем ошибку дальше из промиса
+        commit('offLoading');
+        // throw e //пробрасываем ошибку дальше из промиса
         console.error(e)
       }
     },
@@ -178,8 +183,9 @@ export default{
         commit('deleteCurrentProduct', product.ind);
         commit('offLoading');
       } catch(e){
+        commit('offLoading');
 
-        throw e //пробрасываем ошибку дальше из промиса
+        // throw e //пробрасываем ошибку дальше из промиса
         console.error(e)
       }
     },
@@ -192,14 +198,15 @@ export default{
         commit('deleteCurrentCategory', {ind: category.ind, keyword: category.keyword});
         commit('offLoading');
       } catch(e){
+        commit('offLoading');
 
-        throw e //пробрасываем ошибку дальше из промиса
+        // throw e //пробрасываем ошибку дальше из промиса
         console.error(e)
       }
     },
   
   },
   getters: {
-
+    getPreloader: state => state.dataLoading
   }
 }

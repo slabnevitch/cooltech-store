@@ -1,7 +1,8 @@
 <template>
 	<v-col class="col-12">
     	<h2 class="text-center">Товары</h2>
-      	<!-- {{categories}} -->
+      	{{categories}}
+        
       <v-data-table
         :headers="header"
         :items="productsToRenderInTable"
@@ -134,6 +135,7 @@
               <v-dialog
               v-model="imageDialog"
               >
+            
             <v-card>
               <v-card-title class="text-h5 grey lighten-2">
                 Изображение товара
@@ -167,6 +169,7 @@
           v-model="editDialog"
           
           >
+          
           <v-form
             ref="form"
             v-model="valid"
@@ -175,8 +178,14 @@
             <v-card-title>
               <span class="text-h5">{{formTitle}}</span>
             </v-card-title>
-
-            <v-card-text>
+            <div class="text-center" v-if="preloader">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                class="pt-20 pb-20"
+              ></v-progress-circular>
+            </div>
+            <v-card-text v-else>
               <v-container>
                 <v-row>
                    <v-col
@@ -239,6 +248,7 @@
                   >
                     <v-text-field
                       :rules="rules"
+                      type="number"
                       v-model="editedItem.price"
                       label="Цена"
                     ></v-text-field>
@@ -250,12 +260,14 @@
                   >
                     <v-text-field
                       :rules="rules"
+                      type="number"
                       v-model="editedItem.rating"
                       label="Рейтинг"
                     ></v-text-field>
                     <!-- {{selectedCategory}} -->
-                    loadedImg: {{loadedImg}}
-                    editedIndex: {{editedIndex}}
+                    <!-- loadedImg: {{loadedImg}} --> 
+                    <!-- editedIndex: {{editedIndex}} -->
+                    {{editedItem.category_id}}
                   </v-col>
                 </v-row>
               </v-container>
@@ -425,6 +437,9 @@ export default {
       },
       imageInputPlaceholder(){
         return this.editedIndex === -1 ? 'Добавить изображение товара' : 'Изменить изображение товара' || 'required'
+      },
+      preloader(){
+        return this.$store.getters.getPreloader
       }
     },
   methods: {
@@ -433,7 +448,7 @@ export default {
       return this.$refs.form.validate()
     },
     category(item){
-    	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).category : '';
+    	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).title : '';
     },
     onButtonClick(item){
       // this.$router.push('product/' + item.id)
@@ -454,7 +469,7 @@ export default {
 
         this.selectedCategory = this.categories.find(cat => cat.id === this.editedItem.category_id) ? this.categories.find(cat => cat.id === this.editedItem.category_id).id : '';
         this.editDialog = true
-        this.$refs.form.resetValidation()
+        // this.$refs.form.resetValidation()
       },
     deleteItem (item) {
       this.editedIndex = this.products.indexOf(this.products.find(prod => prod.good === item.good));
@@ -477,10 +492,10 @@ export default {
       this.closeDelete()
     },
     close(){
+      this.$refs.form.resetValidation()
     	this.editDialog = false
       
       this.$nextTick(() => {
-        this.$refs.form.resetValidation()
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
         this.loadedImg = null

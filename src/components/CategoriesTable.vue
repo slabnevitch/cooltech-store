@@ -2,7 +2,7 @@
 	<v-col col="12">
 		<!-- {{categories}} -->
 		{{keyword}}
-    	<h2 class="text-center">Категории</h2>
+    	<h2 class="text-center">{{}}</h2>
 			<v-data-table
 		    :headers="header"
 		    :items="categories"
@@ -87,46 +87,57 @@
 			  v-model="editDialog"
 
 			  >
-			  <v-card>
-			  	<v-card-title>
-			  		<span class="text-h5">{{formTitle}}</span>
-			  	</v-card-title>
+			  <v-form ref="form">
+				  <v-card >
+				  	<v-card-title>
+				  		<span class="text-h5">{{formTitle}}</span>
+				  	</v-card-title>
 
-			  	<v-card-text>
-			  		<v-container>
-			  			<v-row>
-			  				<v-col
-				  				cols="12"
-				  				sm="6"
-				  				md="4"
-				  				>
-					  				<v-text-field
-					  				v-model="editedItem.title"
-					  				label="Категория"
-					  				></v-text-field>
-				  			</v-col>
-		            </v-row>
-		          </v-container>
-		        </v-card-text>
+				  <div class="text-center" v-if="preloader">
+				    <v-progress-circular
+				      indeterminate
+				      color="primary"
+				      class="pt-20 pb-20"
+				    ></v-progress-circular>
+					</div>
+				  	<v-card-text v-else>
+				  		<v-container>
+				  			<v-row>
+				  				<v-col
+					  				cols="12"
+					  				sm="6"
+					  				md="4"
+					  				>
+						  				<v-text-field
+						  				:rules="rules"
+						  				v-model="editedItem.title"
+						  				:label="titleKeys[keyword][2]"
+						  				></v-text-field>
+					  			</v-col>
+			            </v-row>
+			          </v-container>
+			        </v-card-text>
 
-			      <v-card-actions>
-			      	<v-spacer></v-spacer>
-			      	<v-btn
-			      	color="blue darken-1"
-			      	text
-			      	@click="close"
-			      	>
-			      	Cancel
-			      </v-btn>
-			      <v-btn
-			      color="blue darken-1"
-			      text
-			      @click="save"
-			      >
-			        Save
-			      </v-btn>
-			    </v-card-actions>
-			  </v-card>
+				      <v-card-actions>
+				      	<v-spacer></v-spacer>
+				      	<v-btn
+				      	color="blue darken-1"
+				      	text
+				      	@click="close"
+				      	>
+				      	Cancel
+				      </v-btn>
+				      <v-btn
+				      color="blue darken-1"
+				      text
+				      @click="save"
+				      >
+				        Save
+				      </v-btn>
+				    </v-card-actions>
+				  </v-card>
+			  	
+			  </v-form>
 			</v-dialog>
 
 			<v-dialog v-model="dialogDelete" max-width="500px">
@@ -166,32 +177,37 @@ export default {
   },
 
   data () {
-    return {
-    	titleKeys: {
-    		categories: ['категории', 'категорию'],
-    		brands: ['бренда', 'бренд']
-    	},
-      search: '',
-      editDialog: false,
-		dialogDelete: false,
-		editedIndex: -1,
-		editedItem: {
-			id: '',
-			cat_id: '',
- 			title: ''
-		},
-		defaultItem: {
-			id: '',
-			cat_id: '',
- 			title: ''
-		}
-    }
+  	return {
+  		titleKeys: {
+  			categories: ['категории', 'категорию', 'категория'],
+  			brands: ['бренда', 'бренд', 'бренд']
+  		},
+  		search: '',
+  		editDialog: false,
+  		dialogDelete: false,
+  		editedIndex: -1,
+  		editedItem: {
+  			id: '',
+  			cat_id: '',
+  			title: ''
+  		},
+  		defaultItem: {
+  			id: '',
+  			cat_id: '',
+  			title: ''
+  		},
+  		rules: [
+  			value => !!value || 'Обязательное поле'
+  		]
+  	}
   },
   computed: {
     formTitle () {
       return this.editedIndex === -1 ? 'Добавление ' + this.titleKeys[this.keyword][0] : 'Редактирование ' + this.titleKeys[this.keyword][0];
+    },
+    preloader(){
+    	return this.$store.getters.getPreloader
     }
-    
   },
   methods: {
   	editItem (item) {
@@ -199,6 +215,7 @@ export default {
   		this.editedItem = Object.assign({}, item)
   		console.log(this.editedItem)
          this.editDialog = true
+  		this.$refs.form.resetValidation()
       },
     newItem(){
     	this.editedItem = Object.assign({}, this.defaultItem)
@@ -223,6 +240,7 @@ export default {
       this.closeDelete()
     },
     close(){
+    	this.$refs.form.resetValidation()
     	this.editDialog = false
     	this.$nextTick(() => {
     		this.editedItem = Object.assign({}, this.defaultItem)
@@ -230,6 +248,10 @@ export default {
     	})
     },
 	save(){
+		if(!this.$refs.form.validate()){
+			return
+		}
+
 		if (this.editedIndex > -1) {
   		console.log("при добавлении категории срабатывает if!")
 			this.$store.dispatch('editCategory', {editedIndex: this.editedIndex, editedItem: this.editedItem, keyword: this.keyword});

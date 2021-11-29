@@ -43,7 +43,7 @@
               	<!-- {{categories.find(cat => item.category_id === cat.id.toString()).category}} -->
               		{{category(item)}}
               </td>
-              <td>{{item.brand}}</td>
+              <td>{{brand(item)}}</td>
               <td>{{item.price}}</td>
               <td>{{item.rating}}</td>
               <td>
@@ -265,7 +265,7 @@
                     md="4"
                   >
                     <v-text-field
-                      :rules="rules"
+                      :rules="priceRule"
                       type="number"
                       v-model="editedItem.price"
                       label="Цена"
@@ -277,7 +277,7 @@
                     md="4"
                   >
                     <v-text-field
-                      :rules="rules"
+                      :rules="ratingRule"
                       type="number"
                       v-model="editedItem.rating"
                       label="Рейтинг"
@@ -421,7 +421,15 @@ export default {
       validateImgInput: [
         value => (value !== null && value !== '') || 'Обязательное поле'
         // value => !value || 'required'
-      ], 
+      ],
+      priceRule: [
+        value => !!value || 'Обязательное поле',
+        value => (value >= 0) || 'Цена товара не может быть меньше 0',
+      ],
+      ratingRule: [
+        value => !!value || 'Обязательное поле',
+        value => (value >= 0 && value < 6) || 'Значение рейтинга должно быть в пределах 0 - 5',
+      ],
       valid: true,
       dialogContent: {
         photo: 'null'
@@ -437,7 +445,7 @@ export default {
         good: '',
         description: '',
         category_id: '',
-        brand: '',
+        brand_id: '',
     		price: '',
     		rating: '',
         ext: ''
@@ -449,7 +457,7 @@ export default {
         good: '',
         description: '',
         category_id: '',
-        brand: '',
+        brand_id: '',
     		price: '',
     		rating: '',
         ext: ''
@@ -477,6 +485,9 @@ export default {
     },
     category(item){
     	return this.categories.find(cat => item.category_id === cat.id.toString()) ? this.categories.find(cat => item.category_id === cat.id.toString()).title : '';
+    },
+    brand(item){
+      return this.brands.find(brand => item.brand_id === brand.id.toString()) ? this.brands.find(brand => item.brand_id === brand.id.toString()).title : '';
     },
     onButtonClick(item){
       // this.$router.push('product/' + item.id)
@@ -538,6 +549,7 @@ export default {
         return
       } 
 			this.editedItem.category_id = this.selectedCategory.toString();
+      this.editedItem.brand = this.selectedBrand.toString();
       if(typeof this.loadedImg === 'object'){
         this.editedItem.photo = this.loadedImg
       }

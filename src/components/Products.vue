@@ -56,6 +56,7 @@
       :productsToRenderInTable="checkedByBrands"
       :products="products"
       :categories="categories"
+      :brands="brands"
       :search="search"></product-table>
     
   </v-row>

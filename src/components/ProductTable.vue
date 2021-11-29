@@ -35,7 +35,10 @@
                 </a>
 
               </td>
-              <td>{{item.good}}</td>
+              <td>
+                <h4>{{item.good}}</h4>
+                <p>{{item.description}}</p>
+              </td>
               <td>
               	<!-- {{categories.find(cat => item.category_id === cat.id.toString()).category}} -->
               		{{category(item)}}
@@ -204,6 +207,18 @@
                     sm="6"
                     md="4"
                   >
+                    <v-textarea
+                      label="Описание товара"
+                      :rules="rules"
+                      no-resize
+                      rows="3"
+                      v-model="editedItem.description"></v-textarea>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
                     <v-file-input
                       :rules="rules"
                       type="file"
@@ -235,11 +250,14 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
+                    <v-select
                       :rules="rules"
-                      v-model="editedItem.brand"
+                      v-model="selectedBrand"
+                      :items="brands"
+                      item-value="id"
+                      item-text="title"
                       label="Бренд"
-                    ></v-text-field>
+                    ></v-select>
                   </v-col>
                   <v-col
                     cols="12"
@@ -337,6 +355,13 @@ export default {
             return []
         }
   	},
+    brands: {
+      type: Array,
+      require: true,
+      default() {
+            return []
+        }
+    },
   	search: {
   		type: String,
   		require: true,
@@ -410,6 +435,7 @@ export default {
         good_id: '',
         photo: '',
         good: '',
+        description: '',
         category_id: '',
         brand: '',
     		price: '',
@@ -421,6 +447,7 @@ export default {
         good_id: '',
         photo: '',
         good: '',
+        description: '',
         category_id: '',
         brand: '',
     		price: '',
@@ -428,6 +455,7 @@ export default {
         ext: ''
       },
       selectedCategory: 0,
+      selectedBrand: 0,
       loadedImg: null
     }
   },

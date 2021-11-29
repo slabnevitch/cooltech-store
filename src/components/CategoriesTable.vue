@@ -2,7 +2,7 @@
 	<v-col col="12">
 		<!-- {{categories}} -->
 		{{keyword}}
-    	<h2 class="text-center">{{}}</h2>
+    	<h2 class="text-center" style="text-transform: capitalize">{{titleKeys[keyword][0]}}</h2>
 			<v-data-table
 		    :headers="header"
 		    :items="categories"
@@ -20,7 +20,7 @@
 			            class="mb-2"
 			            @click="newItem"
 			          >
-			            Добавить {{titleKeys[keyword][1]}}
+			            Добавить {{titleKeys[keyword][2]}}
 			          </v-btn>
 		    			
 		    		</div>
@@ -111,7 +111,7 @@
 						  				<v-text-field
 						  				:rules="rules"
 						  				v-model="editedItem.title"
-						  				:label="titleKeys[keyword][2]"
+						  				:label="titleKeys[keyword][3]"
 						  				></v-text-field>
 					  			</v-col>
 			            </v-row>
@@ -179,8 +179,8 @@ export default {
   data () {
   	return {
   		titleKeys: {
-  			categories: ['категории', 'категорию', 'категория'],
-  			brands: ['бренда', 'бренд', 'бренд']
+  			categories: ['категории', 'категории', 'категорию', 'категория'],
+  			brands: ['бренды', 'бренда', 'бренд', 'бренд']
   		},
   		search: '',
   		editDialog: false,
@@ -203,7 +203,7 @@ export default {
   },
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'Добавление ' + this.titleKeys[this.keyword][0] : 'Редактирование ' + this.titleKeys[this.keyword][0];
+      return this.editedIndex === -1 ? 'Добавление ' + this.titleKeys[this.keyword][1] : 'Редактирование ' + this.titleKeys[this.keyword][1];
     },
     preloader(){
     	return this.$store.getters.getPreloader
